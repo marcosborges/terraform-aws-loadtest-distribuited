@@ -1,0 +1,10 @@
+execution:
+- concurrency: 10
+  ramp-up: 1m
+  hold-for: 5m
+  scenario: quick-test
+
+scenarios:
+  quick-test:
+    requests:
+    - https://google.com
