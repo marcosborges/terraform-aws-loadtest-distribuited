@@ -1,15 +1,20 @@
-apply:
-	@echo "Executando o provisionamento da infraestrutura"
-	cd terraform && terraform init -backend-config=.config
-	cd terraform && terraform apply -auto-approve
+validate:
+	@echo "Executando a validação"
+	terraform validate
 
-output-master-public-ip:
-	cd terraform && terraform output master_ip_addr_public
+lint:
+	@echo "Executando a rotinas de lint"
+	docker run --rm -v $(shell pwd):/data -t ghcr.io/terraform-linters/tflint
 
-output-nodes-public-ips:
-	cd terraform && terraform output instance_ip_addr
-
-destroy:
-	@echo "Removendo o provisionamento da infraestrutura"
-	cd terraform && terraform destroy --auto-approve
+doc:
+	@echo "Executando rotinas de documentação"
+	docker run \
+		--rm \
+		-v $(shell pwd):/terraform-docs \
+		-u $(shell id -u) \
+		-t quay.io/terraform-docs/terraform-docs:0.16.0 \
+			markdown table \
+				--output-file README.md \
+				--output-mode inject \
+				/terraform-docs
 

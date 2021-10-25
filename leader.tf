@@ -1,0 +1,53 @@
+
+locals {
+    nodes_ips = var.executor == "jmeter" ? join(",",aws_instance.nodes.*.private_ip) : "['${join("','",aws_instance.nodes.*.private_ip)}']"
+}
+
+data "template_file" "leader_script" {
+    template = "${file("${path.module}/scripts/entrypoint.leader.full.sh.tpl")}"
+    vars = {}
+}
+
+resource "aws_instance" "leader" {
+  
+    ami = data.aws_ami.ami.id
+    instance_type = var.leader_instance_type
+
+    associate_public_ip_address = var.leader_associate_public_ip_address
+    monitoring = var.leader_monitoring
+    
+    subnet_id = var.subnet_id
+    vpc_security_group_ids = [aws_security_group.jmeter.id]
+    
+    iam_instance_profile = aws_iam_instance_profile.sc_instances_profile.name
+    user_data_base64 = base64encode(data.template_file.leader_script.rendered)
+    
+    key_name = aws_key_pair.jmeter.key_name
+    connection {
+        host        = coalesce(self.public_ip, self.private_ip)
+        type        = "ssh"
+        user        = var.ssh_user
+        private_key = tls_private_key.jmeter.private_key_pem
+    }
+
+    provisioner "file" {
+        destination = var.loadtest_dir_destination
+        source      = var.loadtest_dir_source
+    }
+
+    provisioner "remote-exec" {
+        inline = [
+            #"while [ ! -f /var/lib/apache-jmeter-5.3/bin/jmeter ]; do sleep 10; done",
+            replace(var.loadtest_entrypoint, "{NODES_IPS}", local.nodes_ips)
+        ]
+    }
+
+    tags = merge(
+        var.tags,
+        var.leader_tags,
+        {
+            "nodes" = join(",", aws_instance.nodes.*.private_ip)
+        }
+    )
+
+}
