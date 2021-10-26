@@ -1,26 +1,17 @@
-data "aws_vpcs" "current" {
+data "aws_vpc" "current" {
     filter {
         name   = "tag:Name"
-        values = ["my-vpc-name"]
+        values = ["uServices-vpc-prd"]
     }
 }
 
 
-data "aws_subnets" "current" {
+data "aws_subnet" "current" {
     filter {
         name   = "tag:Name"
-        values = ["my-subnet-name"]
+        values = ["subnet-prd-a"]
     }
 }
-
-
-data "aws_vpcs" "current" {
-    filter {
-        name   = "tag:Name"
-        values = ["my-vpc-name"]
-    }
-}
-
 
 data "aws_ami" "amazon_linux_2" {
     most_recent = true
@@ -28,6 +19,7 @@ data "aws_ami" "amazon_linux_2" {
         name   = "owner-alias"
         values = ["amazon"]
     }
+    owners = ["amazon"]
     filter {
         name   = "name"
         values = ["amzn2-ami-hvm*"]
@@ -38,8 +30,8 @@ data "aws_ami" "amazon_linux_2" {
 module "loadtest" {
     source = "../../"
 
-    vpc_id = data.aws_vpcs.current.id
-    subnet_id = data.aws_subnets.current.id
+    vpc_id = data.aws_vpc.current.id
+    subnet_id = data.aws_subnet.current.id
 
     name = "nome-da-implantacao"
 
@@ -91,6 +83,12 @@ variable "assume_role_arn" {
 variable "assume_role_external_id" {
     default = ""
     type = string
+}
+
+variable "region" {
+    description = "Name of the region"
+    type = string
+    default = "us-east-1" 
 }
 
 terraform {

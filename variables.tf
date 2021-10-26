@@ -125,7 +125,7 @@ variable "ssh_user" {
 }
 
 
-variable "ssh_cird_ingress_blocks" {
+variable "ssh_cidr_ingress_block" {
     description = "SSH user for the leader"
     type        = list
     default = ["0.0.0.0/0"]
