@@ -142,6 +142,11 @@ variable "ssh_cidr_ingress_block" {
     default = ["0.0.0.0/0"]
 }
 
+variable "ssh_export_pem" {
+    type = bool
+    default = true
+}
+
 variable "setup_instance" {
     description = "Install and configure instances Amazon Linux2 with JMeter and Taurus"
     type = bool

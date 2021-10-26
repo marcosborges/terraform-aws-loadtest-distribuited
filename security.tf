@@ -82,10 +82,15 @@ resource "tls_private_key" "jmeter" {
     rsa_bits  = 4096
 }
 
+
+locals {
+    export_pem_cmd = var.ssh_export_pem == true ? "echo '${tls_private_key.jmeter.private_key_pem}' > ${var.name}-keypair.pem" : "echo 'no exported'"
+}
+
 resource "aws_key_pair" "jmeter" {
     key_name   = "${var.name}-jmeter-keypair"
     public_key =  tls_private_key.jmeter.public_key_openssh
     provisioner "local-exec" {
-        command = "echo '${tls_private_key.jmeter.private_key_pem}' > ${var.name}-keypair"
+        command = local.export_pem_cmd
     }
 }

@@ -88,7 +88,7 @@ resource "null_resource" "publish_split_data" {
     provisioner "remote-exec" {
         inline = [
             #"while [ ! -f /var/lib/apache-jmeter-5.3/bin/jmeter ]; do sleep 10; done",
-            "echo ${format("%02d", count.index)}"
+            "echo ${format("%03d", count.index)}"
         ]
     }
 

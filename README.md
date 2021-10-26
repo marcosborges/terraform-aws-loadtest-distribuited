@@ -2,9 +2,83 @@
 
 This module is used to create and manage AWS Jmeter/Taurus LoadTest Distributed.
 
+Easelly run distributed load test using Jmeter/Taurus and AWS
+
+## Basic Config:
+    
+    1. VPC & Subnet
+    3. Naming LoadTest
+    4. AMI (Amazon Machine Image) Amazon Linux2 for leader & nodes
+    5. Define the executor, entrypoint, source and destination of the load test scripts
+    6. Set nodes size
+
+## Advanced Config:
+    
+    - Export key-pair.pem
+    - Customize JAVA_OPTS for leader & nodes
+    - Enable auto-split of "data mass"
+
+
+## Optimizing
+
+    1. Criando uma imagem já instrumentada com o executor do teste de carga utilizando o packer. 
+    2. Desabilitando a auto-configuração
+    3. Definindo a imagem previamente configurada.
+
+
+## Security Issues:
+
+Algumas configurações devem ser utilizadas somente no ambiente local de desenvolvimento, exemplo:
+    
+    - Exportação da key-pair.pem
+    - Bloco de ips [0.0.0.0/0] liberados para realizar conexão ssh.
+    - IP publico para os nodes
+
 ## JMeter basic usage
 
 ```hcl
+
+
+module "loadtest" {
+
+    source  = "marcosborges/loadtest-distribuited/aws"
+    version = "0.0.1-alpha"
+  
+    vpc_id = data.aws_vpcs.current.id
+    subnet_id = data.aws_subnets.current.id
+
+    name = "nome-da-implantacao"
+
+    loadtest_dir_source = "./assets"
+    loadtest_dir_destination = "/loadtest"
+    loadtest_entrypoint = "bzt -q -o execution.0.distributed=\"{NODES_IPS}\" *.yml"
+    
+    leader_ami_id = data.aws_ami.amazon_linux_2.id
+    nodes_ami_id = data.aws_ami.amazon_linux_2.id
+
+    nodes_size = 3
+    
+    tags = {
+        "Name": "nome-da-implantacao",
+        "Owner": "nome-do-proprietario",
+        "Environment": "producao"
+    }
+}
+
+variable "assume_role_enable" {
+    default = false
+    type = bool
+}
+
+variable "assume_role_arn" {
+    default = ""
+    type = string
+}
+
+variable "assume_role_external_id" {
+    default = ""
+    type = string
+}
 
 data "aws_vpcs" "current" {
     filter {
@@ -41,6 +115,12 @@ data "aws_ami" "amazon_linux_2" {
         values = ["amzn2-ami-hvm*"]
     }
 }
+
+---
+
+## JMeter Advanced usage
+
+```hcl
 
 
 module "loadtest" {
@@ -100,6 +180,43 @@ variable "assume_role_external_id" {
     default = ""
     type = string
 }
+
+data "aws_vpcs" "current" {
+    filter {
+        name   = "tag:Name"
+        values = ["my-vpc-name"]
+    }
+}
+
+
+data "aws_subnets" "current" {
+    filter {
+        name   = "tag:Name"
+        values = ["my-subnet-name"]
+    }
+}
+
+
+data "aws_vpcs" "current" {
+    filter {
+        name   = "tag:Name"
+        values = ["my-vpc-name"]
+    }
+}
+
+
+data "aws_ami" "amazon_linux_2" {
+    most_recent = true
+    filter {
+        name   = "owner-alias"
+        values = ["amazon"]
+    }
+    filter {
+        name   = "name"
+        values = ["amzn2-ami-hvm*"]
+    }
+}
+
 
 ```
 

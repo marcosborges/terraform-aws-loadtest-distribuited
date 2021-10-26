@@ -33,19 +33,22 @@ resource "aws_instance" "leader" {
     }
 
     provisioner "remote-exec" {
-        inline = ["mkdir -p /loadtest"]
+        inline = [
+            "sudo mkdir -p /loadtest || true",
+            "sudo chown ${var.ssh_user}:${var.ssh_user} /loadtest || true"
+        ]
     }
     provisioner "file" {
         destination = var.loadtest_dir_destination
         source      = var.loadtest_dir_source
     }
     #EXECUTE SCRIPTS
-    provisioner "remote-exec" {
-        inline = [
-            #"while [ ! -f /var/lib/apache-jmeter-5.3/bin/jmeter ]; do sleep 10; done",
-            replace(var.loadtest_entrypoint, "{NODES_IPS}", local.nodes_ips)
-        ]
-    }
+    #provisioner "remote-exec" {
+    #    inline = [
+    #        #"while [ ! -f /var/lib/apache-jmeter-5.3/bin/jmeter ]; do sleep 10; done",
+    #        replace(var.loadtest_entrypoint, "{NODES_IPS}", local.nodes_ips)
+    #    ]
+    #}
 
     tags = merge(
         var.tags,
