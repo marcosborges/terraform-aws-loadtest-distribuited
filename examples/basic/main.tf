@@ -1,26 +1,17 @@
-data "aws_vpcs" "current" {
+data "aws_vpc" "current" {
     filter {
         name   = "tag:Name"
-        values = ["my-vpc-name"]
+        values = ["uServices-vpc-prd"]
     }
 }
 
 
-data "aws_subnets" "current" {
+data "aws_subnet" "current" {
     filter {
         name   = "tag:Name"
-        values = ["my-subnet-name"]
+        values = ["subnet-prd-a"]
     }
 }
-
-
-data "aws_vpcs" "current" {
-    filter {
-        name   = "tag:Name"
-        values = ["my-vpc-name"]
-    }
-}
-
 
 data "aws_ami" "amazon_linux_2" {
     most_recent = true
@@ -28,6 +19,7 @@ data "aws_ami" "amazon_linux_2" {
         name   = "owner-alias"
         values = ["amazon"]
     }
+    owners = ["amazon"]
     filter {
         name   = "name"
         values = ["amzn2-ami-hvm*"]
@@ -38,13 +30,13 @@ data "aws_ami" "amazon_linux_2" {
 module "loadtest" {
     source = "../../"
 
-    vpc_id = data.aws_vpcs.current.id
-    subnet_id = data.aws_subnets.current.id
+    vpc_id = data.aws_vpc.current.id
+    subnet_id = data.aws_subnet.current.id
 
     name = "nome-da-implantacao"
 
     executor = "jmeter"
-    loadtest_dir_source = "./assets"
+    loadtest_dir_source = "../plan"
     loadtest_dir_destination = "/loadtest"
     loadtest_entrypoint = "bzt -q -o execution.0.distributed=\"{NODES_IPS}\" *.yml"
     
@@ -59,7 +51,7 @@ module "loadtest" {
         "Role": "leader"
     }
 
-    nodes_total = 3
+    nodes_size = 3
     nodes_ami_id = data.aws_ami.amazon_linux_2.id
     nodes_intance_type = "t2.medium"
     setup_instance_nodes_jmeter_opts = " -Xms12g -Xmx80g -XX:MaxMetaspaceSize=512m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 "
@@ -91,6 +83,12 @@ variable "assume_role_arn" {
 variable "assume_role_external_id" {
     default = ""
     type = string
+}
+
+variable "region" {
+    description = "Name of the region"
+    type = string
+    default = "us-east-1" 
 }
 
 terraform {

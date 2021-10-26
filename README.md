@@ -2,9 +2,83 @@
 
 This module is used to create and manage AWS Jmeter/Taurus LoadTest Distributed.
 
+Easelly run distributed load test using Jmeter/Taurus and AWS
+
+## Basic Config:
+    
+    1. VPC & Subnet
+    3. Naming LoadTest
+    4. AMI (Amazon Machine Image) Amazon Linux2 for leader & nodes
+    5. Define the executor, entrypoint, source and destination of the load test scripts
+    6. Set nodes size
+
+## Advanced Config:
+    
+    - Export key-pair.pem
+    - Customize JAVA_OPTS for leader & nodes
+    - Enable auto-split of "data mass"
+
+
+## Optimizing
+
+    1. Criando uma imagem já instrumentada com o executor do teste de carga utilizando o packer. 
+    2. Desabilitando a auto-configuração
+    3. Definindo a imagem previamente configurada.
+
+
+## Security Issues:
+
+Algumas configurações devem ser utilizadas somente no ambiente local de desenvolvimento, exemplo:
+    
+    - Exportação da key-pair.pem
+    - Bloco de ips [0.0.0.0/0] liberados para realizar conexão ssh.
+    - IP publico para os nodes
+
 ## JMeter basic usage
 
 ```hcl
+
+
+module "loadtest" {
+
+    source  = "marcosborges/loadtest-distribuited/aws"
+    version = "0.0.1-alpha"
+  
+    vpc_id = data.aws_vpcs.current.id
+    subnet_id = data.aws_subnets.current.id
+
+    name = "nome-da-implantacao"
+
+    loadtest_dir_source = "./assets"
+    loadtest_dir_destination = "/loadtest"
+    loadtest_entrypoint = "bzt -q -o execution.0.distributed=\"{NODES_IPS}\" *.yml"
+    
+    leader_ami_id = data.aws_ami.amazon_linux_2.id
+    nodes_ami_id = data.aws_ami.amazon_linux_2.id
+
+    nodes_size = 3
+    
+    tags = {
+        "Name": "nome-da-implantacao",
+        "Owner": "nome-do-proprietario",
+        "Environment": "producao"
+    }
+}
+
+variable "assume_role_enable" {
+    default = false
+    type = bool
+}
+
+variable "assume_role_arn" {
+    default = ""
+    type = string
+}
+
+variable "assume_role_external_id" {
+    default = ""
+    type = string
+}
 
 data "aws_vpcs" "current" {
     filter {
@@ -42,6 +116,12 @@ data "aws_ami" "amazon_linux_2" {
     }
 }
 
+---
+
+## JMeter Advanced usage
+
+```hcl
+
 
 module "loadtest" {
     source = "../../"
@@ -67,7 +147,7 @@ module "loadtest" {
         "Role": "leader"
     }
 
-    nodes_total = 3
+    nodes_size = 3
     nodes_ami_id = data.aws_ami.amazon_linux_2.id
     nodes_intance_type = "t2.medium"
     setup_instance_nodes_jmeter_opts = " -Xms12g -Xmx80g -XX:MaxMetaspaceSize=512m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 "
@@ -100,6 +180,43 @@ variable "assume_role_external_id" {
     default = ""
     type = string
 }
+
+data "aws_vpcs" "current" {
+    filter {
+        name   = "tag:Name"
+        values = ["my-vpc-name"]
+    }
+}
+
+
+data "aws_subnets" "current" {
+    filter {
+        name   = "tag:Name"
+        values = ["my-subnet-name"]
+    }
+}
+
+
+data "aws_vpcs" "current" {
+    filter {
+        name   = "tag:Name"
+        values = ["my-vpc-name"]
+    }
+}
+
+
+data "aws_ami" "amazon_linux_2" {
+    most_recent = true
+    filter {
+        name   = "owner-alias"
+        values = ["amazon"]
+    }
+    filter {
+        name   = "name"
+        values = ["amzn2-ami-hvm*"]
+    }
+}
+
 
 ```
 
@@ -151,8 +268,8 @@ No modules.
 | [aws_key_pair.jmeter](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/key_pair) | resource |
 | [aws_security_group.jmeter](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [tls_private_key.jmeter](https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/private_key) | resource |
-| [aws_subnets.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnets) | data source |
-| [aws_vpcs.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpcs) | data source |
+| [aws_subnet.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnet) | data source |
+| [aws_vpc.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc) | data source |
 
 ## Inputs
 
@@ -163,7 +280,6 @@ No modules.
 | <a name="input_leader_associate_public_ip_address"></a> [leader\_associate\_public\_ip\_address](#input\_leader\_associate\_public\_ip\_address) | Associate public IP address to the leader | `bool` | `true` | no |
 | <a name="input_leader_instance_type"></a> [leader\_instance\_type](#input\_leader\_instance\_type) | Instance type of the cluster leader | `string` | `"t2.medium"` | no |
 | <a name="input_leader_monitoring"></a> [leader\_monitoring](#input\_leader\_monitoring) | Enable monitoring for the leader | `bool` | `true` | no |
-| <a name="input_leader_ssh_user"></a> [leader\_ssh\_user](#input\_leader\_ssh\_user) | SSH user for the leader | `string` | `"ec2-user"` | no |
 | <a name="input_leader_tags"></a> [leader\_tags](#input\_leader\_tags) | Tags of the cluster leader | `map` | n/a | yes |
 | <a name="input_loadtest_dir_destination"></a> [loadtest\_dir\_destination](#input\_loadtest\_dir\_destination) | Path to the destination loadtest directory | `string` | `"/loadtest"` | no |
 | <a name="input_loadtest_dir_source"></a> [loadtest\_dir\_source](#input\_loadtest\_dir\_source) | Path to the source loadtest directory | `string` | n/a | yes |
@@ -173,16 +289,17 @@ No modules.
 | <a name="input_nodes_associate_public_ip_address"></a> [nodes\_associate\_public\_ip\_address](#input\_nodes\_associate\_public\_ip\_address) | Associate public IP address to the nodes | `bool` | `true` | no |
 | <a name="input_nodes_intance_type"></a> [nodes\_intance\_type](#input\_nodes\_intance\_type) | Instance type of the cluster nodes | `string` | `"t2.medium"` | no |
 | <a name="input_nodes_monitoring"></a> [nodes\_monitoring](#input\_nodes\_monitoring) | Enable monitoring for the leader | `bool` | `true` | no |
-| <a name="input_nodes_ssh_user"></a> [nodes\_ssh\_user](#input\_nodes\_ssh\_user) | SSH user for the leader | `string` | `"ec2-user"` | no |
 | <a name="input_nodes_tags"></a> [nodes\_tags](#input\_nodes\_tags) | Tags of the cluster nodes | `map` | n/a | yes |
-| <a name="input_nodes_total"></a> [nodes\_total](#input\_nodes\_total) | Total number of nodes in the cluster | `number` | `2` | no |
+| <a name="input_nodes_size"></a> [nodes\_total](#input\_nodes\_total) | Total number of nodes in the cluster | `number` | `2` | no |
 | <a name="input_region"></a> [region](#input\_region) | Name of the region | `string` | `"us-east-1"` | no |
 | <a name="input_setup_instance"></a> [setup\_instance](#input\_setup\_instance) | Install and configure instances Amazon Linux2 with JMeter and Taurus | `bool` | `true` | no |
 | <a name="input_setup_instance_jmeter_version"></a> [setup\_instance\_jmeter\_version](#input\_setup\_instance\_jmeter\_version) | JMeter version | `string` | `"5.4.1"` | no |
 | <a name="input_setup_instance_leader_jmeter_opts"></a> [setup\_instance\_leader\_jmeter\_opts](#input\_setup\_instance\_leader\_jmeter\_opts) | JMeter Leader OPTS | `string` | `" -Xms12g -Xmx80g -XX:MaxMetaspaceSize=512m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 "` | no |
 | <a name="input_setup_instance_nodes_jmeter_opts"></a> [setup\_instance\_nodes\_jmeter\_opts](#input\_setup\_instance\_nodes\_jmeter\_opts) | JMeter Nodes OPTS | `string` | `" -Xms12g -Xmx80g -XX:MaxMetaspaceSize=512m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 "` | no |
 | <a name="input_setup_instance_taurus_version"></a> [setup\_instance\_taurus\_version](#input\_setup\_instance\_taurus\_version) | Taurus version | `string` | `"1.16.0"` | no |
-| <a name="input_ssh_cird_ingress_blocks"></a> [ssh\_cird\_ingress\_blocks](#input\_ssh\_cird\_ingress\_blocks) | SSH user for the leader | `list` | <pre>[<br>  "0.0.0.0/0"<br>]</pre> | no |
+| <a name="input_split_data_mass"></a> [split\_data\_mass](#input\_split\_data\_mass) | Split data mass between nodes | <pre>map({<br>        "enable" = bool<br>        "strategy" = string<br>        "data_mass_filename" = string<br>    })</pre> | <pre>{<br>  "data_mass_filename": "data_mass.csv",<br>  "enable": false,<br>  "strategy": "random"<br>}</pre> | no |
+| <a name="input_ssh_cidr_ingress_block"></a> [ssh\_cidr\_ingress\_block](#input\_ssh\_cidr\_ingress\_block) | SSH user for the leader | `list` | <pre>[<br>  "0.0.0.0/0"<br>]</pre> | no |
+| <a name="input_ssh_user"></a> [ssh\_user](#input\_ssh\_user) | SSH user for the leader | `string` | `"ec2-user"` | no |
 | <a name="input_subnet_id"></a> [subnet\_id](#input\_subnet\_id) | Id of the subnet | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Common tags | `map` | n/a | yes |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | Id of the VPC | `string` | n/a | yes |

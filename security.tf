@@ -12,8 +12,7 @@ resource "aws_security_group" "jmeter" {
         from_port   = 1099
         to_port     = 1099
         protocol    = "TCP"
-        cidr_blocks      = data.aws_vpc.current.cidr_blocks
-        ipv6_cidr_blocks = data.aws_vpc.current.ipv6_cidr_blocks
+        cidr_blocks      = [data.aws_vpc.current.cidr_block]
     }
 
     ingress {
@@ -21,8 +20,7 @@ resource "aws_security_group" "jmeter" {
         from_port   = 50000
         to_port     = 50000
         protocol    = "TCP"
-        cidr_blocks      = data.aws_vpc.current.cidr_blocks
-        ipv6_cidr_blocks = data.aws_vpc.current.ipv6_cidr_blocks
+        cidr_blocks      = [data.aws_vpc.current.cidr_block]
     }
 
     ingress {
@@ -30,7 +28,7 @@ resource "aws_security_group" "jmeter" {
         from_port   = 22
         to_port     = 22
         protocol    = "tcp"
-        cidr_blocks = var.ssh_cidr_blocks
+        cidr_blocks = var.ssh_cidr_ingress_block
     }
     
     egress {
@@ -84,10 +82,15 @@ resource "tls_private_key" "jmeter" {
     rsa_bits  = 4096
 }
 
+
+locals {
+    export_pem_cmd = var.ssh_export_pem == true ? "echo '${tls_private_key.jmeter.private_key_pem}' > ${var.name}-keypair.pem" : "echo 'no exported'"
+}
+
 resource "aws_key_pair" "jmeter" {
     key_name   = "${var.name}-jmeter-keypair"
     public_key =  tls_private_key.jmeter.public_key_openssh
     provisioner "local-exec" {
-        command = "echo '${tls_private_key.jmeter.private_key_pem}' > ${var.name}-keypair"
+        command = local.export_pem_cmd
     }
 }

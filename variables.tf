@@ -23,6 +23,18 @@ variable "loadtest_dir_destination" {
     default = "/loadtest"
 }
 
+variable "split_data_mass_between_nodes" {
+    type = object({
+        enable = bool
+        data_mass_filename = string
+    })
+    default = {
+        enable = true
+        data_mass_filename = "../plan/data/data.csv"
+    }
+    description = "Split data mass between nodes"
+}
+
 variable "loadtest_entrypoint" {
     description = "Path to the entrypoint command"
     type = string
@@ -62,7 +74,7 @@ variable "leader_tags" {
     type        = map
 }
 
-variable "nodes_total" {
+variable "nodes_size" {
     description = "Total number of nodes in the cluster"
     type        = number
     default     = 2
@@ -124,11 +136,15 @@ variable "ssh_user" {
     default = "ec2-user"
 }
 
-
-variable "ssh_cird_ingress_blocks" {
+variable "ssh_cidr_ingress_block" {
     description = "SSH user for the leader"
     type        = list
     default = ["0.0.0.0/0"]
+}
+
+variable "ssh_export_pem" {
+    type = bool
+    default = true
 }
 
 variable "setup_instance" {
