@@ -1,5 +1,7 @@
 locals {
-    nodes_ips = var.executor == "jmeter" ? join(",",aws_instance.nodes.*.private_ip) : "['${join("','",aws_instance.nodes.*.private_ip)}']"
+    nodes_ips = (var.executor == "jmeter" ? 
+        join(",",aws_instance.nodes.*.private_ip) : 
+        "['${join("','",aws_instance.nodes.*.private_ip)}']")
 }
 
 resource "aws_instance" "leader" {
@@ -21,6 +23,7 @@ resource "aws_instance" "leader" {
         )
     )
     
+    #PUBLISHING SCRIPTS AND DATA
     key_name = aws_key_pair.jmeter.key_name
     connection {
         host        = coalesce(self.public_ip, self.private_ip)
@@ -29,11 +32,14 @@ resource "aws_instance" "leader" {
         private_key = tls_private_key.jmeter.private_key_pem
     }
 
+    provisioner "remote-exec" {
+        inline = ["mkdir -p /loadtest"]
+    }
     provisioner "file" {
         destination = var.loadtest_dir_destination
         source      = var.loadtest_dir_source
     }
-
+    #EXECUTE SCRIPTS
     provisioner "remote-exec" {
         inline = [
             #"while [ ! -f /var/lib/apache-jmeter-5.3/bin/jmeter ]; do sleep 10; done",

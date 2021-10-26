@@ -23,16 +23,14 @@ variable "loadtest_dir_destination" {
     default = "/loadtest"
 }
 
-variable "split_data_mass" {
-    type = map({
-        "enable" = bool
-        "strategy" = string
-        "data_mass_filename" = string
+variable "split_data_mass_between_nodes" {
+    type = object({
+        enable = bool
+        data_mass_filename = string
     })
     default = {
-        "enable" = false
-        "strategy" = "random"
-        "data_mass_filename" = "data_mass.csv"
+        enable = true
+        data_mass_filename = "../plan/data/data.csv"
     }
     description = "Split data mass between nodes"
 }
@@ -76,7 +74,7 @@ variable "leader_tags" {
     type        = map
 }
 
-variable "nodes_total" {
+variable "nodes_size" {
     description = "Total number of nodes in the cluster"
     type        = number
     default     = 2

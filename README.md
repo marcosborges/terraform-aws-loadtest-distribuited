@@ -67,7 +67,7 @@ module "loadtest" {
         "Role": "leader"
     }
 
-    nodes_total = 3
+    nodes_size = 3
     nodes_ami_id = data.aws_ami.amazon_linux_2.id
     nodes_intance_type = "t2.medium"
     setup_instance_nodes_jmeter_opts = " -Xms12g -Xmx80g -XX:MaxMetaspaceSize=512m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 "
@@ -173,7 +173,7 @@ No modules.
 | <a name="input_nodes_intance_type"></a> [nodes\_intance\_type](#input\_nodes\_intance\_type) | Instance type of the cluster nodes | `string` | `"t2.medium"` | no |
 | <a name="input_nodes_monitoring"></a> [nodes\_monitoring](#input\_nodes\_monitoring) | Enable monitoring for the leader | `bool` | `true` | no |
 | <a name="input_nodes_tags"></a> [nodes\_tags](#input\_nodes\_tags) | Tags of the cluster nodes | `map` | n/a | yes |
-| <a name="input_nodes_total"></a> [nodes\_total](#input\_nodes\_total) | Total number of nodes in the cluster | `number` | `2` | no |
+| <a name="input_nodes_size"></a> [nodes\_total](#input\_nodes\_total) | Total number of nodes in the cluster | `number` | `2` | no |
 | <a name="input_region"></a> [region](#input\_region) | Name of the region | `string` | `"us-east-1"` | no |
 | <a name="input_setup_instance"></a> [setup\_instance](#input\_setup\_instance) | Install and configure instances Amazon Linux2 with JMeter and Taurus | `bool` | `true` | no |
 | <a name="input_setup_instance_jmeter_version"></a> [setup\_instance\_jmeter\_version](#input\_setup\_instance\_jmeter\_version) | JMeter version | `string` | `"5.4.1"` | no |

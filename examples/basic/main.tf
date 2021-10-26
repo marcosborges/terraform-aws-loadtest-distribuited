@@ -36,7 +36,7 @@ module "loadtest" {
     name = "nome-da-implantacao"
 
     executor = "jmeter"
-    loadtest_dir_source = "./assets"
+    loadtest_dir_source = "../plan"
     loadtest_dir_destination = "/loadtest"
     loadtest_entrypoint = "bzt -q -o execution.0.distributed=\"{NODES_IPS}\" *.yml"
     
@@ -51,7 +51,7 @@ module "loadtest" {
         "Role": "leader"
     }
 
-    nodes_total = 3
+    nodes_size = 3
     nodes_ami_id = data.aws_ami.amazon_linux_2.id
     nodes_intance_type = "t2.medium"
     setup_instance_nodes_jmeter_opts = " -Xms12g -Xmx80g -XX:MaxMetaspaceSize=512m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 "
