@@ -3,3 +3,4 @@ terraform.tfstate.backup
 terraform.tfstate
 nome-da-implantacao-keypair
 data.csv00*
+.terraform.tfstate.lock
