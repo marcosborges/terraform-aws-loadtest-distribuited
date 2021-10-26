@@ -23,6 +23,20 @@ variable "loadtest_dir_destination" {
     default = "/loadtest"
 }
 
+variable "split_data_mass" {
+    type = map({
+        "enable" = bool
+        "strategy" = string
+        "data_mass_filename" = string
+    })
+    default = {
+        "enable" = false
+        "strategy" = "random"
+        "data_mass_filename" = "data_mass.csv"
+    }
+    description = "Split data mass between nodes"
+}
+
 variable "loadtest_entrypoint" {
     description = "Path to the entrypoint command"
     type = string
@@ -123,7 +137,6 @@ variable "ssh_user" {
     type        = string
     default = "ec2-user"
 }
-
 
 variable "ssh_cidr_ingress_block" {
     description = "SSH user for the leader"
