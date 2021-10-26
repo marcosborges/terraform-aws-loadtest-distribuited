@@ -1,16 +1,10 @@
-
 locals {
     nodes_ips = var.executor == "jmeter" ? join(",",aws_instance.nodes.*.private_ip) : "['${join("','",aws_instance.nodes.*.private_ip)}']"
 }
 
-data "template_file" "leader_script" {
-    template = "${file("${path.module}/scripts/entrypoint.leader.full.sh.tpl")}"
-    vars = {}
-}
-
 resource "aws_instance" "leader" {
   
-    ami = data.aws_ami.ami.id
+    ami = var.leader_ami_id
     instance_type = var.leader_instance_type
 
     associate_public_ip_address = var.leader_associate_public_ip_address
@@ -19,8 +13,13 @@ resource "aws_instance" "leader" {
     subnet_id = var.subnet_id
     vpc_security_group_ids = [aws_security_group.jmeter.id]
     
-    iam_instance_profile = aws_iam_instance_profile.sc_instances_profile.name
-    user_data_base64 = base64encode(data.template_file.leader_script.rendered)
+    iam_instance_profile = aws_iam_instance_profile.jmeter.name
+    user_data_base64 = base64encode(
+        templatefile(
+            "${path.module}/scripts/entrypoint.leader.full.sh.tpl",
+            {}
+        )
+    )
     
     key_name = aws_key_pair.jmeter.key_name
     connection {
@@ -49,5 +48,4 @@ resource "aws_instance" "leader" {
             "nodes" = join(",", aws_instance.nodes.*.private_ip)
         }
     )
-
 }
