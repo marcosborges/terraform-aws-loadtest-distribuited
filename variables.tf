@@ -101,7 +101,6 @@ variable "tags" {
     type        = map
 }
 
-
 ##########################
 # OPTIONAL CONFIGURATION #
 ##########################
@@ -147,31 +146,31 @@ variable "ssh_export_pem" {
     default = true
 }
 
-variable "setup_instance" {
+variable "auto_setup" {
     description = "Install and configure instances Amazon Linux2 with JMeter and Taurus"
     type = bool
     default = true
 }
 
-variable "setup_instance_jmeter_version" {
+variable "jmeter_version" {
     description = "JMeter version"
     type = string
     default = "5.4.1"
 }
 
-variable "setup_instance_leader_jmeter_opts" {
-    description = "JMeter Leader OPTS"
+variable "leader_jvm_args" {
+    description = "JVM Leader JVM_ARGS"
     type = string
-    default = " -Xms12g -Xmx80g -XX:MaxMetaspaceSize=512m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 "
+    default = " -Xms2g -Xmx4g -XX:MaxMetaspaceSize=512m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 "
 }
 
-variable "setup_instance_nodes_jmeter_opts" {
-    description = "JMeter Nodes OPTS"
+variable "nodes_jvm_args" {
+    description = "JVM Nodes JVM_ARGS"
     type = string
-    default = " -Xms12g -Xmx80g -XX:MaxMetaspaceSize=512m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 "
+    default = "-Xms4g -Xmx8g -XX:MaxMetaspaceSize=256m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 -Dnashorn.args=--no-deprecation-warning -XX:+HeapDumpOnOutOfMemoryError "
 }
 
-variable "setup_instance_taurus_version" {
+variable "taurus_version" {
     description = "Taurus version"
     type = string
     default = "1.16.0"

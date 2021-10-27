@@ -19,7 +19,9 @@ resource "aws_instance" "leader" {
     user_data_base64 = base64encode(
         templatefile(
             "${path.module}/scripts/entrypoint.leader.full.sh.tpl",
-            {}
+            {
+                JVM_ARGS = var.leader_jvm_args,
+            }
         )
     )
     

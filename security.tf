@@ -1,4 +1,3 @@
-
 resource "aws_security_group" "jmeter" {
     
     name = "${var.name}-jmeter-seg"
@@ -81,7 +80,6 @@ resource "tls_private_key" "jmeter" {
     algorithm = "RSA"
     rsa_bits  = 4096
 }
-
 
 locals {
     export_pem_cmd = var.ssh_export_pem == true ? "echo '${tls_private_key.jmeter.private_key_pem}' > ${var.name}-keypair.pem" : "echo 'no exported'"
