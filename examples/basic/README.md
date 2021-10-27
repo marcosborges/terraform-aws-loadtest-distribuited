@@ -5,24 +5,23 @@ In its basic use it is necessary to provide information about which network will
 ```hcl
 module "loadtest" {
 
-    source  = "marcosborges/loadtest-distribuited/aws"
-    version = "0.0.3-alpha"
-  
+    source = "../../"
+
     name = "nome-da-implantacao"
-    executor = "bzt"
-    loadtest_dir_source = "./assets"
-    loadtest_dir_destination = "/loadtest"
+    executor = "jmeter"
+    loadtest_dir_source = "../plan"
     loadtest_entrypoint = "bzt -q -o execution.0.distributed=\"{NODES_IPS}\" *.yml"
     nodes_size = 3
 
     subnet_id = data.aws_subnet.current.id
-
 }
 
 data "aws_subnet" "current" {
     filter {
         name   = "tag:Name"
-        values = ["my-subnet-name"]
+        values = ["subnet-prd-a"]
     }
 }
 ```
+
+---

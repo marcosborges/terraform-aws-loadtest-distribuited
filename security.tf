@@ -1,6 +1,6 @@
-resource "aws_security_group" "jmeter" {
+resource "aws_security_group" "loadtest" {
     
-    name = "${var.name}-jmeter-seg"
+    name = "${var.name}-loadtest-seg"
     
     description = "Allow inbound traffic for Jmeter"
     
@@ -11,7 +11,7 @@ resource "aws_security_group" "jmeter" {
         from_port   = 1099
         to_port     = 1099
         protocol    = "TCP"
-        cidr_blocks      = [data.aws_vpc.current.cidr_block]
+        cidr_blocks = [data.aws_vpc.current.cidr_block]
     }
 
     ingress {
@@ -19,7 +19,7 @@ resource "aws_security_group" "jmeter" {
         from_port   = 50000
         to_port     = 50000
         protocol    = "TCP"
-        cidr_blocks      = [data.aws_vpc.current.cidr_block]
+        cidr_blocks = [data.aws_vpc.current.cidr_block]
     }
 
     ingress {
@@ -40,14 +40,14 @@ resource "aws_security_group" "jmeter" {
     tags = merge(
         var.tags,
         {
-            "Name": "${var.name}-jmeter-seg"
+            "Name": "${var.name}-loadtest-seg"
         }
     )
 
 }
 
-resource "aws_iam_role" "jmeter" {
-    name = "${var.name}-jmeter-role"
+resource "aws_iam_role" "loadtest" {
+    name = "${var.name}-loadtest-role"
 
     assume_role_policy = jsonencode({
         Version = "2012-10-17"
@@ -66,28 +66,28 @@ resource "aws_iam_role" "jmeter" {
     tags = merge(
         var.tags,
         {
-            "Name": "${var.name}-jmeter-role"
+            "Name": "${var.name}-loadtest-role"
         }
     )
 }
 
-resource "aws_iam_instance_profile" "jmeter" {
-    name = "${var.name}-jmeter-profile"
-    role = aws_iam_role.jmeter.name
+resource "aws_iam_instance_profile" "loadtest" {
+    name = "${var.name}-loadtest-profile"
+    role = aws_iam_role.loadtest.name
 }
 
-resource "tls_private_key" "jmeter" {
+resource "tls_private_key" "loadtest" {
     algorithm = "RSA"
     rsa_bits  = 4096
 }
 
 locals {
-    export_pem_cmd = var.ssh_export_pem == true ? "echo '${tls_private_key.jmeter.private_key_pem}' > ${var.name}-keypair.pem" : "echo 'no exported'"
+    export_pem_cmd = var.ssh_export_pem == true ? "echo '${tls_private_key.loadtest.private_key_pem}' > ${var.name}-keypair.pem" : "echo 'no exported'"
 }
 
-resource "aws_key_pair" "jmeter" {
-    key_name   = "${var.name}-jmeter-keypair"
-    public_key =  tls_private_key.jmeter.public_key_openssh
+resource "aws_key_pair" "loadtest" {
+    key_name   = "${var.name}-loadtest-keypair"
+    public_key =  tls_private_key.loadtest.public_key_openssh
     provisioner "local-exec" {
         command = local.export_pem_cmd
     }

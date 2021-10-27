@@ -30,8 +30,8 @@ echo "PATH=$PATH" >> /etc/environment
 export HOSTNAME=$(hostname -I | awk '{print $1}')
 echo "HOSTNAME=$HOSTNAME" >> /etc/environment
 
-export JVM_ARGS="${var.JVM_ARGS}"
-echo "JVM_ARGS=${var.JVM_ARGS}" >> /etc/environment
+export JVM_ARGS="${JVM_ARGS}"
+echo "JVM_ARGS=${JVM_ARGS}" >> /etc/environment
 
 # INSTALL PLUGINS
 sudo curl -L --silent https://search.maven.org/remotecontent?filepath=kg/apc/jmeter-plugins-cmn-jmeter/0.6/jmeter-plugins-cmn-jmeter-0.6.jar -o $JMETER_PLUGINS_FOLDER/jmeter-plugins-cmn-jmeter-0.6.jar

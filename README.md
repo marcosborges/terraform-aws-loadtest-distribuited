@@ -7,7 +7,7 @@ This module proposes a simple and uncomplicated way to run your load tests creat
 
 ---
 
-## Basic Config:
+## Basic usage with Taurus
     
 In its basic use it is necessary to provide information about which network will be used, where are your test plan scripts and finally define the number of nodes needed to carry out the desired load.
 
@@ -19,13 +19,11 @@ module "loadtest" {
   
     name = "nome-da-implantacao"
     executor = "bzt"
-    loadtest_dir_source = "./assets"
-    loadtest_dir_destination = "/loadtest"
+    loadtest_dir_source = "./load-test-plan"
     loadtest_entrypoint = "bzt -q -o execution.0.distributed=\"{NODES_IPS}\" *.yml"
     nodes_size = 3
 
     subnet_id = data.aws_subnet.current.id
-
 }
 
 data "aws_subnet" "current" {
@@ -35,6 +33,34 @@ data "aws_subnet" "current" {
     }
 }
 ```
+
+---
+
+## Basic usage with JMeter
+
+```hcl
+module "loadtest" {
+
+    source  = "marcosborges/loadtest-distribuited/aws"
+    version = "0.0.4-alpha"
+  
+    name = "nome-da-implantacao"
+    executor = "jmeter"
+    loadtest_dir_source = "./assets"
+    loadtest_entrypoint = "jmeter -n -t -R \"{NODES_IPS}\" *.jmx"
+    nodes_size = 3
+
+    subnet_id = data.aws_subnet.current.id
+}
+
+data "aws_subnet" "current" {
+    filter {
+        name   = "tag:Name"
+        values = ["my-subnet-name"]
+    }
+}
+```
+
 
 ---
 
@@ -151,100 +177,16 @@ data "aws_ami" "my_image" {
 
 ---
 
-## JMeter basic usage
 
-```hcl
-module "loadtest" {
 
-    source  = "marcosborges/loadtest-distribuited/aws"
-    version = "0.0.2-alpha"
-  
-    subnet_id = data.aws_subnet.current.id
 
-    name = "nome-da-implantacao"
-    executor = "jmeter"
-    loadtest_dir_source = "./assets"
-    loadtest_dir_destination = "/loadtest"
-    loadtest_entrypoint = "jmeter -n -t -R \"{NODES_IPS}\" *.jmx"
-    nodes_size = 3
+## Examples with another executors
 
-}
+- [Taurus](#taurus)
+- [Jmeter](#jmeter)
+- [Locust](#locust)
+- [K6](#k6)
 
-data "aws_subnet" "current" {
-    filter {
-        name   = "tag:Name"
-        values = ["my-subnet-name"]
-    }
-}
-```
-
----
-
-## JMeter Advanced usage
-
-```hcl
-module "loadtest" {
-    source = "../../"
-
-    vpc_id = data.aws_vpcs.current.id
-    subnet_id = data.aws_subnets.current.id
-
-    name = "nome-da-implantacao"
-
-    executor = "jmeter"
-    loadtest_dir_source = "./assets"
-    loadtest_dir_destination = "/loadtest"
-    loadtest_entrypoint = "bzt -q -o execution.0.distributed=\"{NODES_IPS}\" *.yml"
-    
-    leader_instance_type = "t2.medium"
-    leader_jvm_args = " -Xms12g -Xmx80g -XX:MaxMetaspaceSize=512m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 "
-    leader_ami_id = data.aws_ami.amazon_linux_2.id
-
-    leader_tags = {
-        "Name" = "nome-da-implantacao-leader",
-        "Owner": "nome-do-proprietario",
-        "Environment": "producao",
-        "Role": "leader"
-    }
-
-    nodes_size = 3
-    nodes_ami_id = data.aws_ami.amazon_linux_2.id
-    nodes_intance_type = "t2.medium"
-    nodes_jvm_args = " -Xms12g -Xmx80g -XX:MaxMetaspaceSize=512m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 "
- 
-    nodes_tags = {
-        "Name": "nome-da-implantacao",
-        "Owner": "nome-do-proprietario",
-        "Environment": "producao",
-        "Role": "node"
-    }
-    
-    tags = {
-        "Name": "nome-da-implantacao",
-        "Owner": "nome-do-proprietario",
-        "Environment": "producao"
-    }
-}
-
-data "aws_subnet" "current" {
-    filter {
-        name   = "tag:Name"
-        values = ["my-subnet-name"]
-    }
-}
-
-data "aws_ami" "amazon_linux_2" {
-    most_recent = true
-    filter {
-        name   = "owner-alias"
-        values = ["amazon"]
-    }
-    filter {
-        name   = "name"
-        values = ["amzn2-ami-hvm*"]
-    }
-}
-```
 
 ---
 
@@ -256,14 +198,16 @@ data "aws_ami" "amazon_linux_2" {
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.1 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.63 |
+| <a name="requirement_null"></a> [null](#requirement\_null) | >= 3.1.0 |
+| <a name="requirement_tls"></a> [tls](#requirement\_tls) | >= 3.1.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.63 |
-| <a name="provider_null"></a> [null](#provider\_null) | n/a |
-| <a name="provider_tls"></a> [tls](#provider\_tls) | n/a |
+| <a name="provider_null"></a> [null](#provider\_null) | >= 3.1.0 |
+| <a name="provider_tls"></a> [tls](#provider\_tls) | >= 3.1.0 |
 
 ## Modules
 
@@ -279,9 +223,9 @@ No modules.
 | [aws_instance.nodes](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance) | resource |
 | [aws_key_pair.jmeter](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/key_pair) | resource |
 | [aws_security_group.jmeter](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
-| [null_resource.publish_split_data](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
-| [null_resource.split_data](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
-| [tls_private_key.jmeter](https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/private_key) | resource |
+| [null_resource.publish_split_data](https://registry.terraform.io/providers/hashicorp/terraform-provider-null/latest/docs/resources/resource) | resource |
+| [null_resource.split_data](https://registry.terraform.io/providers/hashicorp/terraform-provider-null/latest/docs/resources/resource) | resource |
+| [tls_private_key.jmeter](https://registry.terraform.io/providers/hashicorp/terraform-provider-tls/latest/docs/resources/private_key) | resource |
 | [aws_subnet.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnet) | data source |
 | [aws_vpc.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc) | data source |
 
