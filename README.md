@@ -3,7 +3,7 @@
 This module proposes a simple and uncomplicated way to run your load tests created with JMeter or TaurusBzt on AWS as IaaS.
 
 
-![bp](assets/blueprint.jpg)
+![bp](https://raw.githubusercontent.com/marcosborges/terraform-aws-loadtest-distribuited/11e220561e46faf79ae77b1f6085acecbb2a8ba9/assets/blueprint.jpg)
 
 ---
 
@@ -15,7 +15,7 @@ In its basic use it is necessary to provide information about which network will
 module "loadtest" {
 
     source  = "marcosborges/loadtest-distribuited/aws"
-    version = "0.0.3-alpha"
+    version = "0.0.4-alpha"
   
     name = "nome-da-implantacao"
     executor = "bzt"
