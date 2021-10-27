@@ -29,7 +29,7 @@ variable "split_data_mass_between_nodes" {
         data_mass_filename = string
     })
     default = {
-        enable = true
+        enable = false
         data_mass_filename = "../plan/data/data.csv"
     }
     description = "Split data mass between nodes"
@@ -48,11 +48,6 @@ variable "executor" {
     default = "jmeter"
 }
 
-variable "vpc_id" {
-    description = "Id of the VPC"
-    type        = string
-}
-
 variable "subnet_id" {
     description = "Id of the subnet"
     type        = string
@@ -61,6 +56,7 @@ variable "subnet_id" {
 variable "leader_ami_id" {
     description = "Id of the AMI"
     type        = string
+    default     = ""
 }
 
 variable "leader_instance_type" {
@@ -72,6 +68,7 @@ variable "leader_instance_type" {
 variable "leader_tags" {
     description = "Tags of the cluster leader"
     type        = map
+    default     = {}
 }
 
 variable "nodes_size" {
@@ -83,6 +80,7 @@ variable "nodes_size" {
 variable "nodes_ami_id" {
     description = "Id of the AMI"
     type        = string
+    default = ""
 }
 
 variable "nodes_intance_type" {
@@ -94,11 +92,12 @@ variable "nodes_intance_type" {
 variable "nodes_tags" {
     description = "Tags of the cluster nodes"
     type        = map
+    default     = {}
 }
-
 variable "tags" {
     description = "Common tags"
     type        = map
+    default     = {}
 }
 
 ##########################
@@ -143,7 +142,7 @@ variable "ssh_cidr_ingress_block" {
 
 variable "ssh_export_pem" {
     type = bool
-    default = true
+    default = false
 }
 
 variable "auto_setup" {
@@ -151,6 +150,13 @@ variable "auto_setup" {
     type = bool
     default = true
 }
+
+variable "auto_execute" {
+    description = "Execute Loadtest after leader and nodes available"
+    type = bool
+    default = true
+}
+
 
 variable "jmeter_version" {
     description = "JMeter version"
@@ -174,4 +180,16 @@ variable "taurus_version" {
     description = "Taurus version"
     type = string
     default = "1.16.0"
+}
+
+variable "leader_custom_setup_base64" {
+    description = "Custom bash script encoded in base64 to setup the leader"
+    type = string
+    default = ""
+}
+
+variable "nodes_custom_setup_base64" {
+    description = "Custom bash script encoded in base64 to setup the nodes"
+    type = string
+    default = ""
 }
