@@ -27,8 +27,8 @@ sudo tar -xzf /tmp/apache-jmeter-$JMETER_VERSION.tgz -C /opt
 export PATH="$PATH:$JMETER_BIN"
 echo "PATH=$PATH" >> /etc/environment
 
-export HOSTNAME=$(hostname -I | awk '{print $1}')
-echo "HOSTNAME=$HOSTNAME" >> /etc/environment
+export PRIVATE_IP=$(hostname -I | awk '{print $1}')
+echo "PRIVATE_IP=$PRIVATE_IP" >> /etc/environment
 
 export JVM_ARGS="${JVM_ARGS}"
 echo "JVM_ARGS=${JVM_ARGS}" >> /etc/environment

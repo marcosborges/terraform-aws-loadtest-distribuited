@@ -134,8 +134,14 @@ variable "ssh_user" {
     default = "ec2-user"
 }
 
-variable "ssh_cidr_ingress_block" {
+variable "ssh_cidr_ingress_blocks" {
     description = "SSH user for the leader"
+    type        = list
+    default = ["0.0.0.0/0"]
+}
+
+variable "web_cidr_ingress_blocks" {
+    description = "web for the leader"
     type        = list
     default = ["0.0.0.0/0"]
 }
@@ -167,13 +173,13 @@ variable "jmeter_version" {
 variable "leader_jvm_args" {
     description = "JVM Leader JVM_ARGS"
     type = string
-    default = " -Xms2g -Xmx4g -XX:MaxMetaspaceSize=512m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 "
+    default = " -Xms2g -Xmx2g -XX:MaxMetaspaceSize=256m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 "
 }
 
 variable "nodes_jvm_args" {
     description = "JVM Nodes JVM_ARGS"
     type = string
-    default = "-Xms4g -Xmx8g -XX:MaxMetaspaceSize=256m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 -Dnashorn.args=--no-deprecation-warning -XX:+HeapDumpOnOutOfMemoryError "
+    default = "-Xms2g -Xmx2g -XX:MaxMetaspaceSize=256m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 -Dnashorn.args=--no-deprecation-warning -XX:+HeapDumpOnOutOfMemoryError "
 }
 
 variable "taurus_version" {

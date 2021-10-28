@@ -28,7 +28,7 @@ resource "null_resource" "executor" {
 
     provisioner "remote-exec" {
         inline = [
-            "echo ${var.loadtest_dir_destination} ${format("%03d", count.index)}"
+            "echo \"${var.loadtest_dir_destination} ${format("%03d", count.index)}\""
         ]
     }
 
