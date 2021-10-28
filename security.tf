@@ -15,6 +15,16 @@ resource "aws_security_group" "loadtest" {
     }
 
     ingress {
+        description = "JMeter Port"
+        from_port   = 4445
+        to_port     = 4445
+        protocol    = "TCP"
+        cidr_blocks = [data.aws_vpc.current.cidr_block]
+    }
+
+    
+
+    ingress {
         description = "JMeter RMI Server Port"
         from_port   = 50000
         to_port     = 50000
@@ -23,11 +33,27 @@ resource "aws_security_group" "loadtest" {
     }
 
     ingress {
+        description = "HTTP"
+        from_port   = 80
+        to_port     = 80
+        protocol    = "TCP"
+        cidr_blocks = var.web_cidr_ingress_blocks
+    }
+
+    ingress {
+        description = "HTTPS"
+        from_port   = 443
+        to_port     = 443
+        protocol    = "TCP"
+        cidr_blocks = var.web_cidr_ingress_blocks
+    }
+
+    ingress {
         description = "port 22"
         from_port   = 22
         to_port     = 22
         protocol    = "tcp"
-        cidr_blocks = var.ssh_cidr_ingress_block
+        cidr_blocks = var.ssh_cidr_ingress_blocks
     }
     
     egress {
@@ -82,13 +108,28 @@ resource "tls_private_key" "loadtest" {
 }
 
 locals {
-    export_pem_cmd = var.ssh_export_pem == true ? "echo '${tls_private_key.loadtest.private_key_pem}' > ${var.name}-keypair.pem" : "echo 'no exported'"
+    export_pem_cmd = var.ssh_export_pem == true ? "echo '${tls_private_key.loadtest.private_key_pem}' > ${var.name}-keypair.pem" : "echo 'key pair export disabled'"
 }
 
 resource "aws_key_pair" "loadtest" {
     key_name   = "${var.name}-loadtest-keypair"
     public_key =  tls_private_key.loadtest.public_key_openssh
+    
+}
+
+
+resource "null_resource" "key_pair_exporter" {
+    depends_on = [
+        aws_key_pair.loadtest
+    ]
+
+    triggers = {
+        always_run = timestamp()
+    }
+
     provisioner "local-exec" {
         command = local.export_pem_cmd
     }
+
 }
+
