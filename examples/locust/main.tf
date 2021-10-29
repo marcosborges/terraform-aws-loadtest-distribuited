@@ -1,23 +1,14 @@
-provider "aws" {
-    region = "us-east-1"
-}
+# ManAtWork
 
 module "loadtest" {
 
     source = "../../"
 
     name = "nome-da-implantacao"
-    executor = "jmeter"
+    executor = "locust"
     loadtest_dir_source = "../plan"
-    loadtest_entrypoint = "bzt -q -o execution.0.distributed=\"{NODES_IPS}\" *.yml"
-    nodes_size = 3
+    loadtest_entrypoint = "locust --headless --master --workers=${var.node_size} --csv-output=locust.csv"
+    nodes_size = var.node_size
 
     subnet_id = data.aws_subnet.current.id
-}
-
-data "aws_subnet" "current" {
-    filter {
-        name   = "tag:Name"
-        values = ["subnet-prd-a"]
-    }
 }

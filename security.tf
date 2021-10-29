@@ -22,12 +22,18 @@ resource "aws_security_group" "loadtest" {
         cidr_blocks = [data.aws_vpc.current.cidr_block]
     }
 
-    
-
     ingress {
-        description = "JMeter RMI Server Port"
+        description = "JMeter RMI Server Ports"
         from_port   = 50000
         to_port     = 50000
+        protocol    = "TCP"
+        cidr_blocks = [data.aws_vpc.current.cidr_block]
+    }
+
+    ingress {
+        description = "JMeter RMI Server Ports2"
+        from_port   = 60000
+        to_port     = 60000
         protocol    = "TCP"
         cidr_blocks = [data.aws_vpc.current.cidr_block]
     }
