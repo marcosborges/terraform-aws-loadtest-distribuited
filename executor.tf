@@ -1,5 +1,5 @@
 locals {
-    auto_execute = var.auto_setup
+    auto_execute = var.auto_execute
 
     nodes_private_ips = (
         var.executor == "jmeter" ? 
@@ -26,17 +26,20 @@ resource "null_resource" "executor" {
         private_key = tls_private_key.loadtest.private_key_pem
     }
 
+    #EXECUTE SCRIPTS
     provisioner "remote-exec" {
         inline = [
-            "echo \"${var.loadtest_dir_destination} ${format("%03d", count.index)}\""
+            #"while [ ! -f /var/lib/apache-jmeter-5.3/bin/jmeter ]; do sleep 10; done",
+            "echo 'START EXECUTION'",
+            "echo DIR: ${var.loadtest_dir_destination}",
+            "cd ${var.loadtest_dir_destination}",
+            "echo JVM_ARGS: $JVM_ARGS",
+            "echo ${replace(var.loadtest_entrypoint, "{NODES_IPS}", local.nodes_private_ips)}",
+            replace(var.loadtest_entrypoint, "{NODES_IPS}", local.nodes_private_ips)
         ]
     }
+    triggers = {
+        always_run = timestamp()
+    }
 
-    #EXECUTE SCRIPTS
-    #provisioner "remote-exec" {
-    #    inline = [
-    #        #"while [ ! -f /var/lib/apache-jmeter-5.3/bin/jmeter ]; do sleep 10; done",
-    #        replace(var.loadtest_entrypoint, "{NODES_IPS}", local.nodes_private_ips)
-    #    ]
-    #}
 }

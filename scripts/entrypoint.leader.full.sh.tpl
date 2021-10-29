@@ -1,7 +1,13 @@
 #!/bin/bash
 
 sudo yum update -y
-sudo yum install -y pcre2-devel.x86_64 python gcc python3-devel tzdata curl unzip bash java-11-amazon-corretto htop
+sudo yum install -y pcre2-devel.x86_64 python gcc python3-devel tzdata curl unzip bash java-11-amazon-corretto htop httpd
+
+# APACHE
+sudo systemctl enable httpd
+sudo systemctl start httpd
+sudo chmod -R 777 /var/www/html
+sudo rm -rf /var/www/html/*
 
 # TAURUS
 export BZT_VERSION="1.16.0"
@@ -30,8 +36,8 @@ echo "PATH=$PATH" >> /etc/environment
 export PRIVATE_IP=$(hostname -I | awk '{print $1}')
 echo "PRIVATE_IP=$PRIVATE_IP" >> /etc/environment
 
-export JVM_ARGS="${JVM_ARGS}"
-echo "JVM_ARGS=${JVM_ARGS}" >> /etc/environment
+export JVM_ARGS="${JVM_ARGS}  "
+echo "JVM_ARGS=${JVM_ARGS}  " >> /etc/environment
 
 # INSTALL PLUGINS
 sudo curl -L --silent https://search.maven.org/remotecontent?filepath=kg/apc/jmeter-plugins-cmn-jmeter/0.6/jmeter-plugins-cmn-jmeter-0.6.jar -o $JMETER_PLUGINS_FOLDER/jmeter-plugins-cmn-jmeter-0.6.jar

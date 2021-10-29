@@ -7,4 +7,12 @@ execution:
 scenarios:
   quick-test:
     requests:
-    - https://google.com
+    
+    - label: Google
+      url: https://google.com
+    
+    - label: Microsoft
+      url: https://microsoft.com
+    
+    - label: Facebook
+      url: https://facebook.com
