@@ -5,7 +5,7 @@ sudo yum install -y pcre2-devel.x86_64 python gcc python3-devel tzdata curl unzi
 
 # TAURUS
 export BZT_VERSION="1.16.0"
-sudo pip3 nstall bzt==$BZT_VERSION
+sudo pip3 install bzt==$BZT_VERSION
 
 # JMETER
 export MIRROR_HOST=https://archive.apache.org/dist/jmeter
@@ -22,6 +22,10 @@ curl -L --silent $JMETER_DOWNLOAD_URL > /tmp/apache-jmeter-$JMETER_VERSION.tgz
 # UNCOMPRESS JMETER PACKAGE
 sudo mkdir -p /opt
 sudo tar -xzf /tmp/apache-jmeter-$JMETER_VERSION.tgz -C /opt
+
+sudo echo "#!/bin/bash" > /etc/profile.d/script.sh
+sudo echo "export PATH=\"\$PATH:\$JMETER_BIN\"" >> /etc/profile.d/script.sh
+sudo chmod +x /etc/profile.d/script.sh
 
 # ADD JMETER UM PATH
 export PATH="$PATH:$JMETER_BIN"
@@ -45,5 +49,9 @@ sudo curl -L --silent https://search.maven.org/remotecontent?filepath=kg/apc/jme
 sudo curl -L --silent https://search.maven.org/remotecontent?filepath=kg/apc/jmeter-plugins-prmctl/0.4/jmeter-plugins-prmctl-0.4.jar  -o $JMETER_PLUGINS_FOLDER/jmeter-plugins-prmctl-0.4.jar
 sudo curl -L --silent https://search.maven.org/remotecontent?filepath=kg/apc/jmeter-plugins-tst/2.5/jmeter-plugins-tst-2.5.jar -o $JMETER_PLUGINS_FOLDER/jmeter-plugins-tst-2.5.jar
 
+source ~/.bashrc
+
 # START JMETER NODE
-jmeter-server -Dserver.rmi.localport=50000 -Dserver_port=1099 -Dserver.rmi.ssl.disable=true -Djava.rmi.server.hostname=$PRIVATE_IP
+jmeter -s -Dserver.rmi.localport=50000 -Dserver_port=1099 -Dserver.rmi.ssl.disable=true -Djava.rmi.server.hostname=$PRIVATE_IP -Dserver.exitaftertest=true -Gjmeterengine.remote.system.exit=true -j /tmp/jmeter-server.log 
+
+

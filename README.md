@@ -7,6 +7,16 @@ This module proposes a simple and uncomplicated way to run your load tests creat
 
 ---
 
+## Available Executors
+
+| Executors | |
+|------|----|
+| **jmeter** | http://jmeter.apache.org/usermanual/remote-test.html |
+| **bzt** |
+| **locust** |
+| **k6** |
+
+---
 ## Basic usage with Taurus
     
 In its basic use it is necessary to provide information about which network will be used, where are your test plan scripts and finally define the number of nodes needed to carry out the desired load.
@@ -15,7 +25,7 @@ In its basic use it is necessary to provide information about which network will
 module "loadtest" {
 
     source  = "marcosborges/loadtest-distribuited/aws"
-    version = "0.0.4-alpha"
+    version = "1.0.0"
   
     name = "nome-da-implantacao"
     executor = "bzt"
@@ -42,7 +52,7 @@ data "aws_subnet" "current" {
 module "loadtest" {
 
     source  = "marcosborges/loadtest-distribuited/aws"
-    version = "0.0.4-alpha"
+    version = "1.0.0"
   
     name = "nome-da-implantacao"
     executor = "jmeter"
@@ -81,7 +91,7 @@ The module also provides advanced settings.
 module "loadtest" {
 
     source  = "marcosborges/loadtest-distribuited/aws"
-    version = "0.0.3-alpha"
+    version = "1.0.0"
   
     subnet_id = data.aws_subnet.current.id
 
@@ -177,6 +187,10 @@ data "aws_ami" "my_image" {
 
 ---
 
+
+## Defaults
+
+**Instance type:**  https://aws.amazon.com/pt/ec2/instance-types/c5/
 
 
 

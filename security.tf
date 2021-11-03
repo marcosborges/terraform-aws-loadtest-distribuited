@@ -7,6 +7,13 @@ resource "aws_security_group" "loadtest" {
     vpc_id  = data.aws_vpc.current.id
 
     ingress {
+        from_port   = 0
+        to_port     = 0
+        protocol    = "-1"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    ingress {
         description = "JMeter Server Port"
         from_port   = 1099
         to_port     = 1099
