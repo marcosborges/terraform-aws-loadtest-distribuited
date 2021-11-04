@@ -7,16 +7,6 @@ This module proposes a simple and uncomplicated way to run your load tests creat
 
 ---
 
-## Available Executors
-
-| Executors | |
-|------|----|
-| **jmeter** | http://jmeter.apache.org/usermanual/remote-test.html |
-| **bzt** |
-| **locust** |
-| **k6** |
-
-
 
 ## Basic usage with JMeter
 
@@ -43,13 +33,19 @@ data "aws_subnet" "current" {
 }
 ```
 
-![bp](https://raw.githubusercontent.com/marcosborges/terraform-aws-loadtest-distribuited/feat/bzt/assets/example-basic.png)
+![bp](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/feat/bzt/assets/example-basic.png) 
 
 
+![bp](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/feat/bzt/assets/jmeter-dashboard.png) 
+
+
+    
+
+       
+       
 
 ---
 
----
 ## Basic usage with Taurus
     
 In its basic use it is necessary to provide information about which network will be used, where are your test plan scripts and finally define the number of nodes needed to carry out the desired load.
