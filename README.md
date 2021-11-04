@@ -15,7 +15,6 @@ In its basic use it is necessary to provide information about which network will
 module "loadtest" {
 
     source  = "marcosborges/loadtest-distribuited/aws"
-    version = "0.0.4-alpha"
   
     name = "nome-da-implantacao"
     executor = "bzt"
@@ -42,7 +41,6 @@ data "aws_subnet" "current" {
 module "loadtest" {
 
     source  = "marcosborges/loadtest-distribuited/aws"
-    version = "0.0.4-alpha"
   
     name = "nome-da-implantacao"
     executor = "jmeter"
@@ -81,7 +79,6 @@ The module also provides advanced settings.
 module "loadtest" {
 
     source  = "marcosborges/loadtest-distribuited/aws"
-    version = "0.0.3-alpha"
   
     subnet_id = data.aws_subnet.current.id
 
@@ -180,13 +177,6 @@ data "aws_ami" "my_image" {
 
 
 
-## Examples with another executors
-
-- [Taurus](#taurus)
-- [Jmeter](#jmeter)
-- [Locust](#locust)
-- [K6](#k6)
-
 
 ---
 
@@ -198,16 +188,14 @@ data "aws_ami" "my_image" {
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.1 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.63 |
-| <a name="requirement_null"></a> [null](#requirement\_null) | >= 3.1.0 |
-| <a name="requirement_tls"></a> [tls](#requirement\_tls) | >= 3.1.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.63 |
-| <a name="provider_null"></a> [null](#provider\_null) | >= 3.1.0 |
-| <a name="provider_tls"></a> [tls](#provider\_tls) | >= 3.1.0 |
+| <a name="provider_null"></a> [null](#provider\_null) | n/a |
+| <a name="provider_tls"></a> [tls](#provider\_tls) | n/a |
 
 ## Modules
 
@@ -217,15 +205,18 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [aws_iam_instance_profile.jmeter](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile) | resource |
-| [aws_iam_role.jmeter](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_instance_profile.loadtest](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile) | resource |
+| [aws_iam_role.loadtest](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_instance.leader](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance) | resource |
 | [aws_instance.nodes](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance) | resource |
-| [aws_key_pair.jmeter](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/key_pair) | resource |
-| [aws_security_group.jmeter](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
-| [null_resource.publish_split_data](https://registry.terraform.io/providers/hashicorp/terraform-provider-null/latest/docs/resources/resource) | resource |
-| [null_resource.split_data](https://registry.terraform.io/providers/hashicorp/terraform-provider-null/latest/docs/resources/resource) | resource |
-| [tls_private_key.jmeter](https://registry.terraform.io/providers/hashicorp/terraform-provider-tls/latest/docs/resources/private_key) | resource |
+| [aws_key_pair.loadtest](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/key_pair) | resource |
+| [aws_security_group.loadtest](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
+| [null_resource.executor](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [null_resource.key_pair_exporter](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [null_resource.publish_split_data](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [null_resource.split_data](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [tls_private_key.loadtest](https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/private_key) | resource |
+| [aws_ami.amazon_linux_2](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_subnet.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnet) | data source |
 | [aws_vpc.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc) | data source |
 
@@ -233,35 +224,38 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_auto_execute"></a> [auto\_execute](#input\_auto\_execute) | Execute Loadtest after leader and nodes available | `bool` | `true` | no |
 | <a name="input_auto_setup"></a> [auto\_setup](#input\_auto\_setup) | Install and configure instances Amazon Linux2 with JMeter and Taurus | `bool` | `true` | no |
 | <a name="input_executor"></a> [executor](#input\_executor) | Executor of the loadtest | `string` | `"jmeter"` | no |
 | <a name="input_jmeter_version"></a> [jmeter\_version](#input\_jmeter\_version) | JMeter version | `string` | `"5.4.1"` | no |
-| <a name="input_leader_ami_id"></a> [leader\_ami\_id](#input\_leader\_ami\_id) | Id of the AMI | `string` | n/a | yes |
+| <a name="input_leader_ami_id"></a> [leader\_ami\_id](#input\_leader\_ami\_id) | Id of the AMI | `string` | `""` | no |
 | <a name="input_leader_associate_public_ip_address"></a> [leader\_associate\_public\_ip\_address](#input\_leader\_associate\_public\_ip\_address) | Associate public IP address to the leader | `bool` | `true` | no |
+| <a name="input_leader_custom_setup_base64"></a> [leader\_custom\_setup\_base64](#input\_leader\_custom\_setup\_base64) | Custom bash script encoded in base64 to setup the leader | `string` | `""` | no |
 | <a name="input_leader_instance_type"></a> [leader\_instance\_type](#input\_leader\_instance\_type) | Instance type of the cluster leader | `string` | `"t2.medium"` | no |
-| <a name="input_leader_jvm_args"></a> [leader\_jvm\_args](#input\_leader\_jvm\_args) | JVM Leader JVM\_ARGS | `string` | `" -Xms2g -Xmx4g -XX:MaxMetaspaceSize=512m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 "` | no |
+| <a name="input_leader_jvm_args"></a> [leader\_jvm\_args](#input\_leader\_jvm\_args) | JVM Leader JVM\_ARGS | `string` | `" -Xms2g -Xmx2g -XX:MaxMetaspaceSize=256m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 "` | no |
 | <a name="input_leader_monitoring"></a> [leader\_monitoring](#input\_leader\_monitoring) | Enable monitoring for the leader | `bool` | `true` | no |
-| <a name="input_leader_tags"></a> [leader\_tags](#input\_leader\_tags) | Tags of the cluster leader | `map` | n/a | yes |
+| <a name="input_leader_tags"></a> [leader\_tags](#input\_leader\_tags) | Tags of the cluster leader | `map` | `{}` | no |
 | <a name="input_loadtest_dir_destination"></a> [loadtest\_dir\_destination](#input\_loadtest\_dir\_destination) | Path to the destination loadtest directory | `string` | `"/loadtest"` | no |
 | <a name="input_loadtest_dir_source"></a> [loadtest\_dir\_source](#input\_loadtest\_dir\_source) | Path to the source loadtest directory | `string` | n/a | yes |
 | <a name="input_loadtest_entrypoint"></a> [loadtest\_entrypoint](#input\_loadtest\_entrypoint) | Path to the entrypoint command | `string` | `"bzt -q -o execution.0.distributed=\"{NODES_IPS}\" *.yml"` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name of the provision | `string` | n/a | yes |
-| <a name="input_nodes_ami_id"></a> [nodes\_ami\_id](#input\_nodes\_ami\_id) | Id of the AMI | `string` | n/a | yes |
+| <a name="input_nodes_ami_id"></a> [nodes\_ami\_id](#input\_nodes\_ami\_id) | Id of the AMI | `string` | `""` | no |
 | <a name="input_nodes_associate_public_ip_address"></a> [nodes\_associate\_public\_ip\_address](#input\_nodes\_associate\_public\_ip\_address) | Associate public IP address to the nodes | `bool` | `true` | no |
+| <a name="input_nodes_custom_setup_base64"></a> [nodes\_custom\_setup\_base64](#input\_nodes\_custom\_setup\_base64) | Custom bash script encoded in base64 to setup the nodes | `string` | `""` | no |
 | <a name="input_nodes_intance_type"></a> [nodes\_intance\_type](#input\_nodes\_intance\_type) | Instance type of the cluster nodes | `string` | `"t2.medium"` | no |
-| <a name="input_nodes_jvm_args"></a> [nodes\_jvm\_args](#input\_nodes\_jvm\_args) | JVM Nodes JVM\_ARGS | `string` | `"-Xms4g -Xmx8g -XX:MaxMetaspaceSize=256m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 -Dnashorn.args=--no-deprecation-warning -XX:+HeapDumpOnOutOfMemoryError "` | no |
+| <a name="input_nodes_jvm_args"></a> [nodes\_jvm\_args](#input\_nodes\_jvm\_args) | JVM Nodes JVM\_ARGS | `string` | `"-Xms2g -Xmx2g -XX:MaxMetaspaceSize=256m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 -Dnashorn.args=--no-deprecation-warning -XX:+HeapDumpOnOutOfMemoryError "` | no |
 | <a name="input_nodes_monitoring"></a> [nodes\_monitoring](#input\_nodes\_monitoring) | Enable monitoring for the leader | `bool` | `true` | no |
 | <a name="input_nodes_size"></a> [nodes\_size](#input\_nodes\_size) | Total number of nodes in the cluster | `number` | `2` | no |
-| <a name="input_nodes_tags"></a> [nodes\_tags](#input\_nodes\_tags) | Tags of the cluster nodes | `map` | n/a | yes |
+| <a name="input_nodes_tags"></a> [nodes\_tags](#input\_nodes\_tags) | Tags of the cluster nodes | `map` | `{}` | no |
 | <a name="input_region"></a> [region](#input\_region) | Name of the region | `string` | `"us-east-1"` | no |
-| <a name="input_split_data_mass_between_nodes"></a> [split\_data\_mass\_between\_nodes](#input\_split\_data\_mass\_between\_nodes) | Split data mass between nodes | <pre>object({<br>        enable = bool<br>        data_mass_filename = string<br>    })</pre> | <pre>{<br>  "data_mass_filename": "../plan/data/data.csv",<br>  "enable": true<br>}</pre> | no |
-| <a name="input_ssh_cidr_ingress_block"></a> [ssh\_cidr\_ingress\_block](#input\_ssh\_cidr\_ingress\_block) | SSH user for the leader | `list` | <pre>[<br>  "0.0.0.0/0"<br>]</pre> | no |
-| <a name="input_ssh_export_pem"></a> [ssh\_export\_pem](#input\_ssh\_export\_pem) | n/a | `bool` | `true` | no |
+| <a name="input_split_data_mass_between_nodes"></a> [split\_data\_mass\_between\_nodes](#input\_split\_data\_mass\_between\_nodes) | Split data mass between nodes | <pre>object({<br>        enable = bool<br>        data_mass_filename = string<br>    })</pre> | <pre>{<br>  "data_mass_filename": "../plan/data/data.csv",<br>  "enable": false<br>}</pre> | no |
+| <a name="input_ssh_cidr_ingress_blocks"></a> [ssh\_cidr\_ingress\_blocks](#input\_ssh\_cidr\_ingress\_blocks) | SSH user for the leader | `list` | <pre>[<br>  "0.0.0.0/0"<br>]</pre> | no |
+| <a name="input_ssh_export_pem"></a> [ssh\_export\_pem](#input\_ssh\_export\_pem) | n/a | `bool` | `false` | no |
 | <a name="input_ssh_user"></a> [ssh\_user](#input\_ssh\_user) | SSH user for the leader | `string` | `"ec2-user"` | no |
 | <a name="input_subnet_id"></a> [subnet\_id](#input\_subnet\_id) | Id of the subnet | `string` | n/a | yes |
-| <a name="input_tags"></a> [tags](#input\_tags) | Common tags | `map` | n/a | yes |
+| <a name="input_tags"></a> [tags](#input\_tags) | Common tags | `map` | `{}` | no |
 | <a name="input_taurus_version"></a> [taurus\_version](#input\_taurus\_version) | Taurus version | `string` | `"1.16.0"` | no |
-| <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | Id of the VPC | `string` | n/a | yes |
+| <a name="input_web_cidr_ingress_blocks"></a> [web\_cidr\_ingress\_blocks](#input\_web\_cidr\_ingress\_blocks) | web for the leader | `list` | <pre>[<br>  "0.0.0.0/0"<br>]</pre> | no |
 
 ## Outputs
 
