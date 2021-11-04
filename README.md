@@ -12,15 +12,11 @@ This module proposes a simple and uncomplicated way to run your load tests creat
 module "loadtest" {
 
     source  = "marcosborges/loadtest-distribuited/aws"
-<<<<<<< HEAD
-=======
-    version = "1.0.0"
->>>>>>> master
   
     name = "nome-da-implantacao"
     executor = "jmeter"
     loadtest_dir_source = "./assets"
-    loadtest_entrypoint = "jmeter -n -t -R \"{NODES_IPS}\" *.jmx"
+    loadtest_entrypoint = "jmeter -n -t jmeter/basic.jmx -R \"{NODES_IPS}\" *.jmx"
     nodes_size = 2
 
     subnet_id = data.aws_subnet.current.id
@@ -89,10 +85,6 @@ The module also provides advanced settings.
 module "loadtest" {
 
     source  = "marcosborges/loadtest-distribuited/aws"
-<<<<<<< HEAD
-=======
-    version = "1.0.0"
->>>>>>> master
   
     subnet_id = data.aws_subnet.current.id
 
@@ -106,7 +98,9 @@ module "loadtest" {
     #AUTO SPLIT
     split_data_mass_between_nodes = {
         enable = true
-        data_mass_filename = "../plan/data/data.csv"
+        data_mass_filenames = [
+            "../plan/data/data.csv"
+        ]
     }
 
     #EXPORT SSH KEY

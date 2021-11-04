@@ -31,8 +31,9 @@ resource "null_resource" "executor" {
     count = local.auto_execute ? 1 : 0
 
     depends_on = [
-        aws_instance.leader,
-        aws_instance.nodes
+        null_resource.publish_split_data,
+        aws_instance.nodes,
+        aws_instance.leader
     ]  
 
     connection {

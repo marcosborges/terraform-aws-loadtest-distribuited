@@ -1,12 +1,14 @@
 locals {
     split_enable = var.split_data_mass_between_nodes.enable
-    split_data_mass_filename = var.split_data_mass_between_nodes.data_mass_filename
+    split_data_mass_filename = var.split_data_mass_between_nodes.data_mass_filenames[0]
     split_size = var.nodes_size
-    split_cmd =  local.split_enable ? "split -a 3 -d -nr/${local.split_size} ${local.split_data_mass_filename} ${local.split_data_mass_filename}" : "echo 'auto split disabled'"
+    split_cmd =  local.split_enable ? "cd ${var.loadtest_dir_source} && split -a 3 -d -nr/${local.split_size} ${local.split_data_mass_filename} ${local.split_data_mass_filename}" : "echo 'auto split disabled'"
 }
 
 resource "null_resource" "split_data" {
+    
     provisioner "local-exec" {
+
         command = local.split_cmd
     }
 }

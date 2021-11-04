@@ -26,11 +26,11 @@ variable "loadtest_dir_destination" {
 variable "split_data_mass_between_nodes" {
     type = object({
         enable = bool
-        data_mass_filename = string
+        data_mass_filenames = list(string)
     })
     default = {
         enable = false
-        data_mass_filename = "../plan/data/data.csv"
+        data_mass_filenames = ["../plan/data/data.csv"]
     }
     description = "Split data mass between nodes"
 }

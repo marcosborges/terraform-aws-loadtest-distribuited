@@ -1,7 +1,7 @@
 #!/bin/bash
 
 sudo yum update -y
-sudo yum install -y pcre2-devel.x86_64 python gcc python3-devel tzdata curl unzip bash java-11-amazon-corretto htop httpd
+sudo yum install -y pcre2-devel.x86_64 python gcc python3-devel tzdata curl unzip bash java-11-amazon-corretto htop httpd k6
 
 # APACHE
 sudo systemctl enable httpd
@@ -12,6 +12,10 @@ sudo rm -rf /var/www/html/*
 # TAURUS
 export BZT_VERSION="1.16.0"
 sudo pip3 install bzt==$BZT_VERSION
+
+# LOCUST
+export LOCUST_VERSION="2.4.3"
+sudo pip3 install locust==$LOCUST_VERSION
 
 # JMETER
 export MIRROR_HOST=https://archive.apache.org/dist/jmeter
