@@ -62,7 +62,7 @@ variable "leader_ami_id" {
 variable "leader_instance_type" {
     description = "Instance type of the cluster leader"
     type        = string
-    default     = "t2.medium"
+    default     = "c5n.large"
 }
 
 variable "leader_tags" {
@@ -86,7 +86,7 @@ variable "nodes_ami_id" {
 variable "nodes_intance_type" {
     description = "Instance type of the cluster nodes"
     type        = string
-    default     = "t2.medium"
+    default     = "c5n.xlarge"
 }
 
 variable "nodes_tags" {
@@ -173,13 +173,13 @@ variable "jmeter_version" {
 variable "leader_jvm_args" {
     description = "JVM Leader JVM_ARGS"
     type = string
-    default = " -Xms2g -Xmx2g -XX:MaxMetaspaceSize=256m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 "
+    default = " -Xms3g -Xmx4g -Dnashorn.args=--no-deprecation-warning  "
 }
 
 variable "nodes_jvm_args" {
     description = "JVM Nodes JVM_ARGS"
     type = string
-    default = "-Xms2g -Xmx2g -XX:MaxMetaspaceSize=256m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 -Dnashorn.args=--no-deprecation-warning -XX:+HeapDumpOnOutOfMemoryError "
+    default = "-Xms5g -Xmx10g -Dnashorn.args=--no-deprecation-warning"
 }
 
 variable "taurus_version" {

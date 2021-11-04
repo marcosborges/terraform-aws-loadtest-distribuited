@@ -5,3 +5,7 @@ nome-da-implantacao-keypair
 data.csv00*
 .terraform.tfstate.lock
 *.pem
+.terraform.lock.hcl
+.log
+.terraform.tfstate.lock.info
+jmeter.log

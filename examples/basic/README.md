@@ -19,4 +19,11 @@ module "loadtest-distribuited" {
 }
 ```
 
+
+![bp](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/master/assets/example-basic.png) 
+
+
+![bp](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/master/assets/jmeter-dashboard.png) 
+
+
 ---
