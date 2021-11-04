@@ -1,13 +1,29 @@
 locals {
     auto_execute = var.auto_execute
 
-    nodes_private_ips = (
-        var.executor == "jmeter" ? 
-            join(",",aws_instance.nodes.*.private_ip) : 
-            "['${join("','",aws_instance.nodes.*.private_ip)}']"
-    )
-
     leader_private_ip = aws_instance.leader.private_ip
+
+    executors = {
+        jmeter = {
+            nodes_ips = join(",",aws_instance.nodes.*.private_ip) 
+        }
+        bzt = {
+            nodes_ips = "['${join("','",aws_instance.nodes.*.private_ip)}']"
+        }
+        locust = {
+            nodes_ips = join(",",aws_instance.nodes.*.private_ip)
+            leader_ip = local.leader_private_ip
+        }
+        k6 = {
+            waiting = "#"
+            nodes_ips = ""
+        }
+    }
+     
+    executor = lookup(local.executors, var.executor, "")
+    waiting_command = "while [ ! -f /tmp/finished-setup ]; do echo 'waiting setup to be instaled'; sleep 5; done"
+    nodes_ips = local.executor.nodes_ips
+
 }
 
 resource "null_resource" "executor" {
@@ -29,17 +45,27 @@ resource "null_resource" "executor" {
     #EXECUTE SCRIPTS
     provisioner "remote-exec" {
         inline = [
-            #"while [ ! -f /var/lib/apache-jmeter-5.3/bin/jmeter ]; do sleep 10; done",
             "echo 'START EXECUTION'",
-            "echo DIR: ${var.loadtest_dir_destination}",
-            "cd ${var.loadtest_dir_destination}",
-            "echo JVM_ARGS: $JVM_ARGS",
-            "echo ${replace(var.loadtest_entrypoint, "{NODES_IPS}", local.nodes_private_ips)}",
-            replace(var.loadtest_entrypoint, "{NODES_IPS}", local.nodes_private_ips)
+            local.waiting_command,
         ]
     }
-    triggers = {
-        always_run = timestamp()
+
+    provisioner "remote-exec" {
+        inline = [
+            "echo DIR: ${var.loadtest_dir_destination}",
+            "cd ${var.loadtest_dir_destination}",
+            "echo PATH: $PATH",
+            "echo JVM_ARGS: $JVM_ARGS",
+            "sudo chmod 777 /var/www/html -Rf",
+            "sudo rm -rf /var/www/html/*",
+            "sudo rm -rf /loadtest/logs",
+            "echo ${replace(var.loadtest_entrypoint, "{NODES_IPS}", local.nodes_ips)}",
+            replace(var.loadtest_entrypoint, "{NODES_IPS}", local.nodes_ips)
+        ]
     }
+
+    # triggers = {
+    #     always_run = timestamp()
+    # }
 
 }

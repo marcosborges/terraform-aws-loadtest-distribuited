@@ -35,6 +35,14 @@ resource "aws_instance" "nodes" {
         source      = var.loadtest_dir_source
     }
 
+    provisioner "remote-exec" {
+        inline = [
+            "echo 'START EXECUTION'",
+            "while [ ! -f /tmp/finished-setup ]; do echo 'waiting setup to be instaled'; sleep 5; done",
+            "sleep 10"
+        ]
+    }
+
     tags = merge(
         var.tags,
         var.nodes_tags
