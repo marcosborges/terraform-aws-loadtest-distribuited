@@ -5,8 +5,6 @@ This module proposes a simple and uncomplicated way to run your load tests creat
 
 ![bp](https://raw.githubusercontent.com/marcosborges/terraform-aws-loadtest-distribuited/v0.0.7-alpha/assets/blueprint.png)
 
----
-
 
 ## Basic usage with JMeter
 
@@ -20,7 +18,7 @@ module "loadtest" {
     executor = "jmeter"
     loadtest_dir_source = "./assets"
     loadtest_entrypoint = "jmeter -n -t -R \"{NODES_IPS}\" *.jmx"
-    nodes_size = 3
+    nodes_size = 2
 
     subnet_id = data.aws_subnet.current.id
 }
@@ -33,16 +31,12 @@ data "aws_subnet" "current" {
 }
 ```
 
-![bp](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/feat/bzt/assets/example-basic.png) 
+![bp](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/master/assets/example-basic.png) 
 
 
-![bp](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/feat/bzt/assets/jmeter-dashboard.png) 
+![bp](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/master/assets/jmeter-dashboard.png) 
 
 
-    
-
-       
-       
 
 ---
 
@@ -60,7 +54,7 @@ module "loadtest" {
     executor = "bzt"
     loadtest_dir_source = "./load-test-plan"
     loadtest_entrypoint = "bzt -q -o execution.0.distributed=\"{NODES_IPS}\" *.yml"
-    nodes_size = 3
+    nodes_size = 2
 
     subnet_id = data.aws_subnet.current.id
 }

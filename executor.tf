@@ -14,7 +14,6 @@ locals {
             nodes_ips = join(",",aws_instance.nodes.*.private_ip)
             leader_ip = local.leader_private_ip
         }
-
         k6 = {
             waiting = "#"
             nodes_ips = ""
