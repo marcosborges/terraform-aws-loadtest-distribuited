@@ -56,4 +56,4 @@ sudo curl -L --silent https://search.maven.org/remotecontent?filepath=kg/apc/jme
 sudo curl -L --silent https://search.maven.org/remotecontent?filepath=kg/apc/jmeter-plugins-tst/2.5/jmeter-plugins-tst-2.5.jar -o $JMETER_PLUGINS_FOLDER/jmeter-plugins-tst-2.5.jar
 
 
-
+touch /tmp/finished-setup

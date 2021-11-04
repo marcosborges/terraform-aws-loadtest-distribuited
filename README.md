@@ -16,6 +16,39 @@ This module proposes a simple and uncomplicated way to run your load tests creat
 | **locust** |
 | **k6** |
 
+
+
+## Basic usage with JMeter
+
+```hcl
+module "loadtest" {
+
+    source  = "marcosborges/loadtest-distribuited/aws"
+    version = "1.0.0"
+  
+    name = "nome-da-implantacao"
+    executor = "jmeter"
+    loadtest_dir_source = "./assets"
+    loadtest_entrypoint = "jmeter -n -t -R \"{NODES_IPS}\" *.jmx"
+    nodes_size = 3
+
+    subnet_id = data.aws_subnet.current.id
+}
+
+data "aws_subnet" "current" {
+    filter {
+        name   = "tag:Name"
+        values = ["my-subnet-name"]
+    }
+}
+```
+
+![bp](https://raw.githubusercontent.com/marcosborges/terraform-aws-loadtest-distribuited/feat/bzt/assets/example-basic.png)
+
+
+
+---
+
 ---
 ## Basic usage with Taurus
     
@@ -46,33 +79,6 @@ data "aws_subnet" "current" {
 
 ---
 
-## Basic usage with JMeter
-
-```hcl
-module "loadtest" {
-
-    source  = "marcosborges/loadtest-distribuited/aws"
-    version = "1.0.0"
-  
-    name = "nome-da-implantacao"
-    executor = "jmeter"
-    loadtest_dir_source = "./assets"
-    loadtest_entrypoint = "jmeter -n -t -R \"{NODES_IPS}\" *.jmx"
-    nodes_size = 3
-
-    subnet_id = data.aws_subnet.current.id
-}
-
-data "aws_subnet" "current" {
-    filter {
-        name   = "tag:Name"
-        values = ["my-subnet-name"]
-    }
-}
-```
-
-
----
 
 ## Advanced Config:
     

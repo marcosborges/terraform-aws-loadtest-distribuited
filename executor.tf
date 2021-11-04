@@ -5,15 +5,12 @@ locals {
 
     executors = {
         jmeter = {
-            waiting = "#while true; do source ~/.bashrc; echo 'waiting jmeter to be instaled'; sleep 10; jmeter --version; done"
             nodes_ips = join(",",aws_instance.nodes.*.private_ip) 
         }
         bzt = {
-            waiting = "#"
             nodes_ips = "['${join("','",aws_instance.nodes.*.private_ip)}']"
         }
         locust = {
-            waiting = "#"
             nodes_ips = join(",",aws_instance.nodes.*.private_ip)
             leader_ip = local.leader_private_ip
         }
@@ -25,7 +22,7 @@ locals {
     }
      
     executor = lookup(local.executors, var.executor, "")
-    waiting_command = local.executor.waiting
+    waiting_command = "while [ ! -f /tmp/finished-setup ]; do echo 'waiting setup to be instaled'; sleep 5; done"
     nodes_ips = local.executor.nodes_ips
 
 }
@@ -49,12 +46,13 @@ resource "null_resource" "executor" {
     #EXECUTE SCRIPTS
     provisioner "remote-exec" {
         inline = [
-            
             "echo 'START EXECUTION'",
             local.waiting_command,
-            "sleep 180",
-            "source ~/.bashrc",
-            "sleep 60",
+        ]
+    }
+
+    provisioner "remote-exec" {
+        inline = [
             "echo DIR: ${var.loadtest_dir_destination}",
             "cd ${var.loadtest_dir_destination}",
             "echo PATH: $PATH",
@@ -66,8 +64,9 @@ resource "null_resource" "executor" {
             replace(var.loadtest_entrypoint, "{NODES_IPS}", local.nodes_ips)
         ]
     }
-    triggers = {
-        always_run = timestamp()
-    }
+
+    # triggers = {
+    #     always_run = timestamp()
+    # }
 
 }
