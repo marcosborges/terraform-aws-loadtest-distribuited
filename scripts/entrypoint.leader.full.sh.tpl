@@ -60,4 +60,8 @@ sudo curl -L --silent https://search.maven.org/remotecontent?filepath=kg/apc/jme
 sudo curl -L --silent https://search.maven.org/remotecontent?filepath=kg/apc/jmeter-plugins-tst/2.5/jmeter-plugins-tst-2.5.jar -o $JMETER_PLUGINS_FOLDER/jmeter-plugins-tst-2.5.jar
 
 
+mkdir -p ~/.ssh
+echo 'Host *' > ~/.ssh/config
+echo 'StrictHostKeyChecking no' >> ~/.ssh/config
+
 touch /tmp/finished-setup

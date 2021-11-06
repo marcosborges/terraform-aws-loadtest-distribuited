@@ -41,7 +41,7 @@ resource "null_resource" "executor" {
     count = local.auto_execute ? 1 : 0
 
     depends_on = [
-        null_resource.publish_split_data,
+        null_resource.spliter_execute_command,
         aws_instance.nodes,
         aws_instance.leader
     ]  

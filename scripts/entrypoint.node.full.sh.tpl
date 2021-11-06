@@ -56,6 +56,10 @@ sudo curl -L --silent https://search.maven.org/remotecontent?filepath=kg/apc/jme
 
 source ~/.bashrc
 
+mkdir -p ~/.ssh
+echo 'Host *' > ~/.ssh/config
+echo 'StrictHostKeyChecking no' >> ~/.ssh/config
+
 touch /tmp/finished-setup
 
 # START JMETER NODE

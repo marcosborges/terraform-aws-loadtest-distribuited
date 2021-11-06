@@ -1,64 +1,79 @@
 locals {
-    split_enable = var.split_data_mass_between_nodes.enable
-    split_data_mass_filename = var.split_data_mass_between_nodes.data_mass_filenames[0]
+    spliter_enable = var.split_data_mass_between_nodes.enable
     split_size = var.nodes_size
-    split_cmd =  local.split_enable ? "cd ${var.loadtest_dir_source} && split -a 3 -d -nr/${local.split_size} ${local.split_data_mass_filename} ${local.split_data_mass_filename}" : "echo 'auto split disabled'"
+    split_data_mass_filenames = local.spliter_enable ? var.split_data_mass_between_nodes.data_mass_filenames : []
 
-    publish_split_data_count = local.split_enable ? var.nodes_size : 0
+    # SPLIT COMMAND TEMPLATE
+    split_cmd_tpl = "split -a 3 -d -nr/${local.split_size} ${var.loadtest_dir_destination}/{FILENAME} ${var.loadtest_dir_destination}/{FILENAME}"
+    # RENDERIZATION COMMAND TEMPLATE
+    leader_split_cmds = [for file in local.split_data_mass_filenames : replace(local.split_cmd_tpl, "{FILENAME}", file)]
+    # SKIP SSH/SCP HOST VERIFICATION
+    ssh_skip_hosts_verification = " -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "
 
-    # publish_files = flatten([
-    #     for network_key, network in var.networks : [
-    #     for subnet_key, subnet in network.subnets : {
-    #         network_key = network_key
-    #         subnet_key  = subnet_key
-    #         network_id  = aws_vpc.example[network_key].id
-    #         cidr_block  = subnet.cidr_block
-    #     }
-    #     ]
-    # ])
+    # TRANSFER SCP COMMAND TEMPLATE
+    scp_cmd_tpl = "echo scp ${local.ssh_skip_hosts_verification} ${var.loadtest_dir_destination}/{FILE_IN} ${var.ssh_user}@{HOST}:${var.loadtest_dir_destination}/{FILE_OUT}"
+    # RENDERIZATION CLEANUP SCP COMMAND
+    leader_scp_cmds = flatten([
+        for file in local.split_data_mass_filenames : [
+            for index, host in aws_instance.nodes : [
+                replace(
+                    replace(
+                        replace(
+                            local.scp_cmd_tpl, 
+                            "{FILE_IN}", 
+                            "${file}${format("%03d", index)}"
+                        ), 
+                        "{FILE_OUT}",  
+                        file
+                    ),
+                    "{HOST}",  
+                    host.private_ip
+                )
+            ]
+        ]
+    ])
+
+    # CLEANUP SSH COMMAND TEMPLATE OF INTO NODES BY LEADER
+    leader_ssh_nodes_cleanup_cmd_tpl = "echo ssh ${local.ssh_skip_hosts_verification} ${var.ssh_user}@{HOST} -c \"rm -rf ${var.loadtest_dir_destination}/{FILE}\" || true"
+    # RENDERIZATION CLEANUP SSH COMMAND
+    leader_ssh_nodes_cleanup_cmds = flatten([
+        for file in local.split_data_mass_filenames : [
+            for host in aws_instance.nodes : [
+                replace(
+                    replace(
+                        local.leader_ssh_nodes_cleanup_cmd_tpl, 
+                        "{FILE}", 
+                        file
+                    ), 
+                    "{HOST}",  
+                    host.private_ip
+                )
+            ]
+        ]
+    ])
+
+    # JOIN COMMANDS TO BE EXECUTED BY LEADER
+    leader_cmds = concat(
+        local.leader_split_cmds, 
+        local.leader_ssh_nodes_cleanup_cmds,
+        local.leader_scp_cmds
+    )
 }
 
-resource "null_resource" "split_data" {
+
+resource "null_resource" "spliter_execute_command" {
     
-    provisioner "local-exec" {
-
-        command = local.split_cmd
-    }
-}
-
-resource "null_resource" "publish_split_data" {
-
-    count = local.publish_split_data_count
-
-    depends_on = [
-        null_resource.split_data,
-        aws_instance.nodes
-    ]  
-
+    # CONNECT TO LEADER
     connection {
-        host        = coalesce(aws_instance.nodes[count.index].public_ip, aws_instance.nodes[count.index].private_ip)
+        host        = coalesce(aws_instance.leader.public_ip, aws_instance.leader.private_ip)
         type        = "ssh"
         user        = var.ssh_user
         private_key = tls_private_key.loadtest.private_key_pem
     }
 
+    # EXECUTION OF ALL COMMANDS DEFINED INTO local.leader_cmds
     provisioner "remote-exec" {
-        inline = [
-            "sudo mkdir -p ${var.loadtest_dir_destination}|| true",
-            "sudo chown ${var.ssh_user}:${var.ssh_user} ${var.loadtest_dir_destination} || true"
-        ]
+        inline = local.leader_cmds
     }
-
-    provisioner "remote-exec" {
-        inline = [
-            "rm ${var.loadtest_dir_destination}/${var.split_data_mass_between_nodes.data_mass_filenames[0]}",
-            "echo XXXXXX ${var.loadtest_dir_destination}/${var.split_data_mass_between_nodes.data_mass_filenames[0]}${format("%03d", count.index)}",
-            "mv ${var.loadtest_dir_destination}/${var.split_data_mass_between_nodes.data_mass_filenames[0]}${format("%03d", count.index)} ${var.loadtest_dir_destination}/${var.split_data_mass_between_nodes.data_mass_filenames[0]}"
-        ]
-    }
-
-    #provisioner "file" {
-    #    source      = "${var.loadtest_dir_source}${format("%03d", count.index)}"
-    #    destination = "${var.loadtest_dir_destination}/${var.loadtest_dir_source}"
-    #}
+    
 }
