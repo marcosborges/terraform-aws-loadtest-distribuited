@@ -3,7 +3,7 @@
 This module proposes a simple and uncomplicated way to run your load tests created with JMeter or TaurusBzt on AWS as IaaS.
 
 
-![bp](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/master/assets/assets/blueprint.png)
+![bp](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/master/assets/blueprint.png)
 
 
 ## Basic usage with JMeter
