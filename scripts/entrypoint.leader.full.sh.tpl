@@ -1,7 +1,7 @@
 #!/bin/bash
 
 sudo yum update -y
-sudo yum install -y pcre2-devel.x86_64 python gcc python3-devel tzdata curl unzip bash java-11-amazon-corretto htop httpd
+sudo yum install -y pcre2-devel.x86_64 python gcc python3-devel tzdata curl unzip bash java-11-amazon-corretto htop httpd k6
 
 # APACHE
 sudo systemctl enable httpd
@@ -12,6 +12,10 @@ sudo rm -rf /var/www/html/*
 # TAURUS
 export BZT_VERSION="1.16.0"
 sudo pip3 install bzt==$BZT_VERSION
+
+# LOCUST
+export LOCUST_VERSION="2.4.3"
+sudo pip3 install locust==$LOCUST_VERSION
 
 # JMETER
 export MIRROR_HOST=https://archive.apache.org/dist/jmeter
@@ -55,5 +59,9 @@ sudo curl -L --silent https://search.maven.org/remotecontent?filepath=kg/apc/jme
 sudo curl -L --silent https://search.maven.org/remotecontent?filepath=kg/apc/jmeter-plugins-prmctl/0.4/jmeter-plugins-prmctl-0.4.jar  -o $JMETER_PLUGINS_FOLDER/jmeter-plugins-prmctl-0.4.jar
 sudo curl -L --silent https://search.maven.org/remotecontent?filepath=kg/apc/jmeter-plugins-tst/2.5/jmeter-plugins-tst-2.5.jar -o $JMETER_PLUGINS_FOLDER/jmeter-plugins-tst-2.5.jar
 
+
+mkdir -p ~/.ssh
+echo 'Host *' > ~/.ssh/config
+echo 'StrictHostKeyChecking no' >> ~/.ssh/config
 
 touch /tmp/finished-setup

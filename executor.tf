@@ -24,6 +24,16 @@ locals {
     waiting_command = "while [ ! -f /tmp/finished-setup ]; do echo 'waiting setup to be instaled'; sleep 5; done"
     nodes_ips = local.executor.nodes_ips
 
+    entrypoint = replace(
+        replace(
+            var.loadtest_entrypoint, 
+            "{NODES_IPS}", 
+            local.nodes_ips
+        ),
+        "{LEADER_IP}", 
+        local.leader_private_ip
+    )
+
 }
 
 resource "null_resource" "executor" {
@@ -31,8 +41,9 @@ resource "null_resource" "executor" {
     count = local.auto_execute ? 1 : 0
 
     depends_on = [
-        aws_instance.leader,
-        aws_instance.nodes
+        null_resource.spliter_execute_command,
+        aws_instance.nodes,
+        aws_instance.leader
     ]  
 
     connection {
@@ -42,7 +53,7 @@ resource "null_resource" "executor" {
         private_key = tls_private_key.loadtest.private_key_pem
     }
 
-    #EXECUTE SCRIPTS
+    #WAITING FOR INSTANCE FINISHING SETUP
     provisioner "remote-exec" {
         inline = [
             "echo 'START EXECUTION'",
@@ -50,22 +61,27 @@ resource "null_resource" "executor" {
         ]
     }
 
+    #CLEANING UP
+    provisioner "remote-exec" {
+        inline = [
+            "sudo chmod 777 /var/www/html -Rf",
+            "sudo rm -rf /var/www/html/*",
+            "sudo rm -rf /loadtest/logs",
+        ]
+    }
+
+    #EXECUTING LOAD TEST
     provisioner "remote-exec" {
         inline = [
             "echo DIR: ${var.loadtest_dir_destination}",
             "cd ${var.loadtest_dir_destination}",
-            "echo PATH: $PATH",
-            "echo JVM_ARGS: $JVM_ARGS",
-            "sudo chmod 777 /var/www/html -Rf",
-            "sudo rm -rf /var/www/html/*",
-            "sudo rm -rf /loadtest/logs",
-            "echo ${replace(var.loadtest_entrypoint, "{NODES_IPS}", local.nodes_ips)}",
-            replace(var.loadtest_entrypoint, "{NODES_IPS}", local.nodes_ips)
+            "echo ${local.entrypoint}",
+            local.entrypoint
         ]
     }
 
-    # triggers = {
-    #     always_run = timestamp()
-    # }
+    triggers = {
+        always_run = timestamp()
+    }
 
 }

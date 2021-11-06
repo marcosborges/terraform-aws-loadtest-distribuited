@@ -24,10 +24,13 @@ resource "aws_instance" "leader" {
 
     provisioner "remote-exec" {
         inline = [
+            "echo '${tls_private_key.loadtest.private_key_pem}' > ~/.ssh/id_rsa",
+            "chmod 600 ~/.ssh/id_rsa",
             "sudo mkdir -p ${var.loadtest_dir_destination} || true",
             "sudo chown ${var.ssh_user}:${var.ssh_user} ${var.loadtest_dir_destination} || true"
         ]
     }
+    #-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
 
     provisioner "file" {
         destination = var.loadtest_dir_destination
@@ -41,4 +44,10 @@ resource "aws_instance" "leader" {
             "nodes" = join(",", aws_instance.nodes.*.private_ip)
         }
     )
+}
+
+
+resource "null_resource" "push_key_pair_to_leader" {
+    
+    
 }
