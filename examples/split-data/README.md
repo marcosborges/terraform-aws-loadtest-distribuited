@@ -33,20 +33,20 @@ module "loadtest" {
 
 Behind the scene the terraform script sends all data mass files to the payload leader.
 
-![split](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/master/assets/split-cmd.png)
+![split](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/feat/spliter/assets/split-cmd.png)
 
 After submission, the files are divided by the leader into fragments by us.
 
-![split-result](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/master/assets/split-cmd-result.png)
+![split-result](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/feat/spliter/assets/split-cmd-result.png)
 
 The last action is to send each fragment to its respective node.
 
-![split-result](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/master/assets/split-transfer.png)
+![split-result](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/feat/spliter/assets/split-transfer.png)
 
 
 Splitting the files uses the linux `split` command and splits the main file into 1 fragment for each node.
 
-![split-result](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/master/assets/split-transfer.png)
+![split-result](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/feat/spliter/assets/split-transfer.png)
 
 More info: [Split doc](https://man7.org/linux/man-pages/man1/split.1.html)
 
