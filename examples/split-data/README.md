@@ -8,6 +8,8 @@ Just set the `split_data_mass_between_nodes` variable by activating the feature 
 
 See the example below...
 
+## Example
+
 ```hcl
 module "loadtest" {
 
@@ -30,8 +32,9 @@ module "loadtest" {
     subnet_id = data.aws_subnet.current.id
 }
 ```
+---
 
-Behind the scenes:
+## Behind the scene:
 
 1. sends all data mass files to the leader.
 
