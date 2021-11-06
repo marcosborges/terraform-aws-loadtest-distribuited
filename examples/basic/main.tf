@@ -11,6 +11,6 @@ module "loadtest" {
     
     loadtest_entrypoint = "jmeter -n -t jmeter/basic.jmx  -R \"{NODES_IPS}\" -l /loadtest/logs -e -o /var/www/html/jmeter -Dnashorn.args=--no-deprecation-warning -Dserver.rmi.ssl.disable=true "
 
-    ssh_export_pem = true
+    ssh_export_pem = false
     subnet_id = data.aws_subnet.current.id
 }

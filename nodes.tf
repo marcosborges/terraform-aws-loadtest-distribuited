@@ -14,7 +14,7 @@ resource "aws_instance" "nodes" {
     iam_instance_profile = aws_iam_instance_profile.loadtest.name
     user_data_base64 = local.nodes_user_data_base64
 
-    #PUBLISHING SCRIPTS AND DATA
+    
     key_name = aws_key_pair.loadtest.key_name
     connection {
         host        = coalesce(self.public_ip, self.private_ip)
@@ -23,6 +23,8 @@ resource "aws_instance" "nodes" {
         private_key = tls_private_key.loadtest.private_key_pem
     }
 
+    
+    # CONFIG FILESYSTEM AND PERMITIONS
     provisioner "remote-exec" {
         inline = [
             "sudo mkdir -p ${var.loadtest_dir_destination} || true",
@@ -30,11 +32,13 @@ resource "aws_instance" "nodes" {
         ]
     }
 
+    # PUBLISH ALL FILES
     provisioner "file" {
         destination = var.loadtest_dir_destination
         source      = var.loadtest_dir_source
     }
 
+    # WAITING FOR NODES TO BE READY
     provisioner "remote-exec" {
         inline = [
             "echo 'START EXECUTION'",
