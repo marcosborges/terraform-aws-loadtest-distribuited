@@ -38,15 +38,15 @@ module "loadtest" {
 
 1. sends all data mass files to the leader.
 
-![split](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/feat/spliter/assets/split-cmd.png)
+![split](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/master/assets/split-cmd.png)
 
 2. After submission, the files are divided by the leader into fragments by us for each nodes.
 
-![split-result](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/feat/spliter/assets/split-cmd-result.png)
+![split-result](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/master/assets/split-cmd-result.png)
 
 3. The last action is to send each fragment to its respective node.
 
-![split-result](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/feat/spliter/assets/split-transfer.png)
+![split-result](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/master/assets/split-transfer.png)
 
 *Splitting the files uses the linux `split` command and splits the main file into 1 fragment for each node.*
 

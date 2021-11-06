@@ -11,7 +11,7 @@ locals {
     ssh_skip_hosts_verification = " -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "
 
     # TRANSFER SCP COMMAND TEMPLATE
-    scp_cmd_tpl = "echo scp ${local.ssh_skip_hosts_verification} ${var.loadtest_dir_destination}/{FILE_IN} ${var.ssh_user}@{HOST}:${var.loadtest_dir_destination}/{FILE_OUT}"
+    scp_cmd_tpl = "scp ${local.ssh_skip_hosts_verification} ${var.loadtest_dir_destination}/{FILE_IN} ${var.ssh_user}@{HOST}:${var.loadtest_dir_destination}/{FILE_OUT}"
     # RENDERIZATION CLEANUP SCP COMMAND
     leader_scp_cmds = flatten([
         for file in local.split_data_mass_filenames : [
@@ -34,7 +34,7 @@ locals {
     ])
 
     # CLEANUP SSH COMMAND TEMPLATE OF INTO NODES BY LEADER
-    leader_ssh_nodes_cleanup_cmd_tpl = "echo ssh ${local.ssh_skip_hosts_verification} ${var.ssh_user}@{HOST} -c \"rm -rf ${var.loadtest_dir_destination}/{FILE}\" || true"
+    leader_ssh_nodes_cleanup_cmd_tpl = "ssh ${local.ssh_skip_hosts_verification} ${var.ssh_user}@{HOST} -c \"rm -rf ${var.loadtest_dir_destination}/{FILE}\" || true"
     # RENDERIZATION CLEANUP SSH COMMAND
     leader_ssh_nodes_cleanup_cmds = flatten([
         for file in local.split_data_mass_filenames : [
