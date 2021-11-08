@@ -7,9 +7,9 @@ module "loadtest" {
 
     source = "../../"
 
-    name = "nome-da-implantacao"
+    name = "nome-da-implantacao-taurus"
     executor = "jmeter"
-    loadtest_dir_source = "../plan"
+    loadtest_dir_source = "../plan/"
     loadtest_entrypoint = "bzt -q -o execution.0.distributed=\"{NODES_IPS}\" *.yml"
     nodes_size = 3
 

@@ -189,15 +189,15 @@ data "aws_ami" "my_image" {
 The [C5](https://aws.amazon.com/pt/ec2/instance-types/c5/) family of instances is a good choice for the load test.
 
 
-|Modelo|vCPU|Memória (GiB)|Armazenamento de instâncias (GiB)|Largura de banda de rede (Gbps)|
+|Model|vCPU|Mem (GiB)|Storage (GiB)|Network Band. (Gbps)|
 |:---:|:---:|:---:|:---:|:---:|
-|c5n.large| 2 | 5.25	| Somente EBS | Até 25 Até 4.750| 
-|c5n.xlarge| 4 | 10.5	| Somente EBS | Até 25	Até 4.750| 
-|c5n.2xlarge| 8 | 21	| Somente EBS | Até 25	Até 4.750| 
-|c5n.4xlarge| 16 | 42	| Somente EBS | Até 25	4.750| 
-|c5n.9xlarge| 36 | 96   | Somente EBS | 50	9.500| 
-|c5n.18xlarge| 72 | 192	| Somente EBS | 100	19.000| 
-|c5n.metal| 72 | 192	| Somente EBS | 100	19.000| 
+|c5n.large| 2 | 5.25	| EBS | 25 -> 4.750| 
+|c5n.xlarge| 4 | 10.5	| EBS | 25	-> 4.750| 
+|c5n.2xlarge| 8 | 21	| EBS | 25	-> 4.750| 
+|c5n.4xlarge| 16 | 42	| EBS | 25	4.750| 
+|c5n.9xlarge| 36 | 96   | EBS | 50	9.500| 
+|c5n.18xlarge| 72 | 192	| EBS | 100	19.000| 
+|c5n.metal| 72 | 192	| EBS | 100	19.000| 
 
 ---
 

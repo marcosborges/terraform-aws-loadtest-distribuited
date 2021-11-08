@@ -2,9 +2,8 @@ module "loadtest" {
 
     source = "../../"
     #source  = "marcosborges/loadtest-distribuited/aws"
-    #version = "1.0.0"
 
-    name = "nome-da-implantacao"
+    name = "nome-da-implantacao-basic"
     executor = var.executor #"jmeter"
     loadtest_dir_source = "../plan/"
     nodes_size = 2

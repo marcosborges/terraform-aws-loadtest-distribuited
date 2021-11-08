@@ -54,12 +54,12 @@ locals {
 
     # JOIN COMMANDS TO BE EXECUTED BY LEADER
     leader_cmds = concat(
+        ["echo AUTO SPLITER"],
         local.leader_split_cmds, 
         local.leader_ssh_nodes_cleanup_cmds,
         local.leader_scp_cmds
     )
 }
-
 
 resource "null_resource" "spliter_execute_command" {
     

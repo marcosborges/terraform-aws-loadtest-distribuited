@@ -1,18 +1,37 @@
 execution:
-- concurrency: 10
-  ramp-up: 1m
-  hold-for: 5m
-  scenario: quick-test
+  - concurrency: 10
+    ramp-up: 1m
+    hold-for: 5m
+    scenario: quick-test
 
 scenarios:
   quick-test:
+    #data-sources: 
+    #  - path: /loadtest/data/users.csv
+    #    delimiter: ','
+    #    quoted: true
+    #    encoding: "utf-8"
+    #    loop: true
+    #    variable-names: name,email,password
+    #    random-order: false
     requests:
-    
-    - label: Google
-      url: https://google.com
-    
-    - label: Microsoft
-      url: https://microsoft.com
-    
-    - label: Facebook
-      url: https://facebook.com
+      - label: Google
+        url: https://google.com
+      - label: Microsoft
+        url: https://microsoft.com
+      - label: Facebook
+        url: https://facebook.com
+    properties:
+      server.rmi.ssl.disable: true
+
+modules:
+  jmeter:
+    gui: false
+    version: 5.4.1
+    properties:
+      mode: StrippedBatch
+    memory-xmx: 10G
+    cmdline: -l /loadtest/logs -e -o /var/www/html/taurus 
+
+settings:
+ verbose: false

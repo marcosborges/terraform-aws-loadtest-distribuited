@@ -8,7 +8,7 @@ module "loadtest-distribuited" {
     source = "../../"
     #source  = "marcosborges/loadtest-distribuited/aws"
 
-    name = "nome-da-implantacao"
+    name = "nome-da-implantacao-basic"
     executor = "jmeter"
     loadtest_dir_source = "../plan/"
     nodes_size = 2

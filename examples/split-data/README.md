@@ -15,7 +15,7 @@ module "loadtest" {
 
     source  = "marcosborges/loadtest-distribuited/aws"
     
-    name = "nome-da-implantacao"
+    name = "nome-da-implantacao-spliter"
     executor = "jmeter"
     loadtest_dir_source = "../plan/"
     nodes_size = 2

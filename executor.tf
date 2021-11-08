@@ -74,6 +74,7 @@ resource "null_resource" "executor" {
     provisioner "remote-exec" {
         inline = [
             "echo DIR: ${var.loadtest_dir_destination}",
+            "ls -lah ${var.loadtest_dir_destination}",
             "cd ${var.loadtest_dir_destination}",
             "echo ${local.entrypoint}",
             local.entrypoint

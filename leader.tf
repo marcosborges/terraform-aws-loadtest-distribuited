@@ -45,9 +45,3 @@ resource "aws_instance" "leader" {
         }
     )
 }
-
-
-resource "null_resource" "push_key_pair_to_leader" {
-    
-    
-}
