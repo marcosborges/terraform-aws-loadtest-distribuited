@@ -9,15 +9,16 @@ This module proposes a simple and uncomplicated way to run your load tests creat
 ## Basic usage with JMeter
 
 ```hcl
-module "loadtest" {
+module "loadtest-distribuited" {
 
     source  = "marcosborges/loadtest-distribuited/aws"
-  
+
     name = "nome-da-implantacao"
     executor = "jmeter"
-    loadtest_dir_source = "./assets"
-    loadtest_entrypoint = "jmeter -n -t jmeter/basic.jmx -R \"{NODES_IPS}\" *.jmx"
+    loadtest_dir_source = "examples/plan/"
     nodes_size = 2
+    
+    loadtest_entrypoint = "jmeter -n -t jmeter/basic.jmx  -R \"{NODES_IPS}\" -l /var/logs/loadtest -e -o /var/www/html -Dnashorn.args=--no-deprecation-warning -Dserver.rmi.ssl.disable=true "
 
     subnet_id = data.aws_subnet.current.id
 }
@@ -35,8 +36,6 @@ data "aws_subnet" "current" {
 
 ![bp](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/master/assets/jmeter-dashboard.png) 
 
-
-
 ---
 
 ## Basic usage with Taurus
@@ -44,15 +43,16 @@ data "aws_subnet" "current" {
 In its basic use it is necessary to provide information about which network will be used, where are your test plan scripts and finally define the number of nodes needed to carry out the desired load.
 
 ```hcl
-module "loadtest" {
+module "loadtest-distribuited" {
 
     source  = "marcosborges/loadtest-distribuited/aws"
-  
+
     name = "nome-da-implantacao"
-    executor = "bzt"
-    loadtest_dir_source = "./load-test-plan"
-    loadtest_entrypoint = "bzt -q -o execution.0.distributed=\"{NODES_IPS}\" *.yml"
+    executor = "jmeter"
+    loadtest_dir_source = "examples/plan/"
     nodes_size = 2
+    
+    loadtest_entrypoint = "bzt -q -o execution.0.distributed=\"{NODES_IPS}\" taurus/basic.yml"
 
     subnet_id = data.aws_subnet.current.id
 }
@@ -84,22 +84,25 @@ The module also provides advanced settings.
 ```hcl
 module "loadtest" {
 
+
     source  = "marcosborges/loadtest-distribuited/aws"
-  
-    subnet_id = data.aws_subnet.current.id
 
     name = "nome-da-implantacao"
     executor = "bzt"
-    loadtest_dir_source = "./assets"
+    loadtest_dir_source = "examples/plan/"
+
     loadtest_dir_destination = "/loadtest"
-    loadtest_entrypoint = "bzt -q -o execution.0.distributed=\"{NODES_IPS}\" *.yml"
+    loadtest_entrypoint = "bzt -q -o execution.0.distributed=\"{NODES_IPS}\" taurus/basic.yml"
     nodes_size = 3
 
+    
+    subnet_id = data.aws_subnet.current.id
+    
     #AUTO SPLIT
     split_data_mass_between_nodes = {
         enable = true
         data_mass_filenames = [
-            "../plan/data/data.csv"
+            "data/users.csv"
         ]
     }
 
@@ -179,16 +182,22 @@ data "aws_ami" "my_image" {
 }
 
 ```
-
 ---
 
+## Sugestion
 
-## Defaults
-
-**Instance type:**  https://aws.amazon.com/pt/ec2/instance-types/c5/
-
+The [C5](https://aws.amazon.com/pt/ec2/instance-types/c5/) family of instances is a good choice for the load test.
 
 
+|Model|vCPU|Mem (GiB)|Storage (GiB)|Network Band. (Gbps)|
+|:---:|:---:|:---:|:---:|:---:|
+|c5n.large| 2 | 5.25	| EBS | 25 -> 4.750| 
+|c5n.xlarge| 4 | 10.5	| EBS | 25	-> 4.750| 
+|c5n.2xlarge| 8 | 21	| EBS | 25	-> 4.750| 
+|c5n.4xlarge| 16 | 42	| EBS | 25	4.750| 
+|c5n.9xlarge| 36 | 96   | EBS | 50	9.500| 
+|c5n.18xlarge| 72 | 192	| EBS | 100	19.000| 
+|c5n.metal| 72 | 192	| EBS | 100	19.000| 
 
 ---
 
