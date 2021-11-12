@@ -12,7 +12,7 @@ resource "aws_instance" "nodes" {
     vpc_security_group_ids = [aws_security_group.loadtest.id]
     
     iam_instance_profile = aws_iam_instance_profile.loadtest.name
-    user_data_base64 = local.nodes_user_data_base64
+    user_data_base64 = local.setup_nodes_base64
 
     
     key_name = aws_key_pair.loadtest.key_name
@@ -53,4 +53,58 @@ resource "aws_instance" "nodes" {
         var.tags,
         var.nodes_tags
     )
+}
+
+locals {
+  
+    setup_nodes_executors = {
+        jmeter = {
+            node_user_data_base64 = base64encode(
+                templatefile(
+                    "${path.module}/scripts/entrypoint.node.full.sh.tpl",
+                    {
+                        JVM_ARGS = var.nodes_jvm_args
+                    }
+                )
+            )
+        }
+        bzt = {
+            node_user_data_base64 = base64encode(
+                templatefile(
+                    "${path.module}/scripts/entrypoint.node.full.sh.tpl",
+                    {
+                        JVM_ARGS = var.nodes_jvm_args
+                    }
+                )
+            )
+        }
+        locust = {
+            node_user_data_base64 = base64encode(
+                templatefile(
+                    "${path.module}/scripts/locust.entrypoint.node.full.sh.tpl",
+                    {}
+                )
+            )
+        }
+        k6 = {
+            node_user_data_base64 = base64encode(
+                templatefile(
+                    "${path.module}/scripts/k6.entrypoint.node.full.sh.tpl",
+                    {
+                        JVM_ARGS = var.nodes_jvm_args
+                    }
+                )
+            )
+        }
+    }
+     
+    setup_nodes_executor = lookup(
+        local.setup_nodes_executors, 
+        var.executor, {
+            node_user_data_base64 = var.nodes_custom_setup_base64
+        }
+    )
+
+    setup_nodes_base64 = local.setup_nodes_executor.node_user_data_base64
+
 }

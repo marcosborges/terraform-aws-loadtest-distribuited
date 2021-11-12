@@ -30,7 +30,7 @@ variable "split_data_mass_between_nodes" {
     })
     default = {
         enable = false
-        data_mass_filenames = ["../plan/data/data.csv"]
+        data_mass_filenames = []
     }
     description = "Split data mass between nodes"
 }
@@ -41,6 +41,8 @@ variable "loadtest_entrypoint" {
     default = "bzt -q -o execution.0.distributed=\"{NODES_IPS}\" *.yml"
     #default = "jmeter -n -t -R \"{NODES_IPS}\" *.jmx  "
 }
+
+
 
 variable "executor" {
     description = "Executor of the loadtest"
@@ -163,7 +165,6 @@ variable "auto_execute" {
     default = true
 }
 
-
 variable "jmeter_version" {
     description = "JMeter version"
     type = string
@@ -173,13 +174,13 @@ variable "jmeter_version" {
 variable "leader_jvm_args" {
     description = "JVM Leader JVM_ARGS"
     type = string
-    default = " -Xms3g -Xmx4g -Dnashorn.args=--no-deprecation-warning  "
+    default = " -Xms2g -Xmx3g -Dnashorn.args=--no-deprecation-warning  "
 }
 
 variable "nodes_jvm_args" {
     description = "JVM Nodes JVM_ARGS"
     type = string
-    default = "-Xms5g -Xmx10g -Dnashorn.args=--no-deprecation-warning"
+    default = "-Xms2g -Xmx4g -Dnashorn.args=--no-deprecation-warning"
 }
 
 variable "taurus_version" {
@@ -199,3 +200,40 @@ variable "nodes_custom_setup_base64" {
     type = string
     default = ""
 }
+
+variable "locust_plan_filename" {
+    description = "Filename locust plan"
+    type = string
+    default = ""
+}
+
+variable "node_custom_entrypoint" {
+    description = "Path to the entrypoint command"
+    type = string
+    default = ""
+}
+
+variable "plan_git_clone" {
+    description = "Clone url from loadtest plan"
+    type = string
+    default = ""
+}
+
+
+variable "locust_replicas_per_node"{
+    description = "Number of locust replicas per node. You should typically run one worker instance per processor core on the worker machines in order to utilize all their computing power."
+    type = number
+    default = 1
+}
+variable "locust_exporter" {
+    type = object({
+        enable = bool
+        data_mass_filenames = list(string)
+    })
+    default = {
+        enable = false
+        data_mass_filenames = ["../plan/data/data.csv"]
+    }
+    description = "Export locust result to prometheus"
+}
+

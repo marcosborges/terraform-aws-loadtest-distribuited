@@ -34,16 +34,86 @@ locals {
         local.leader_private_ip
     )
 
+    node_entrypoint = replace(
+        replace(
+            var.node_custom_entrypoint, 
+            "{NODES_IPS}", 
+            local.nodes_ips
+        ),
+        "{LEADER_IP}", 
+        local.leader_private_ip
+    )
 }
+
+
+resource "null_resource" "setup_leader" {
+    depends_on = [
+        aws_instance.leader,
+        aws_instance.nodes
+    ] 
+
+    connection {
+        host        = coalesce(aws_instance.leader.public_ip, aws_instance.leader.private_ip)
+        type        = "ssh"
+        user        = var.ssh_user
+        private_key = tls_private_key.loadtest.private_key_pem
+    }
+
+    provisioner "remote-exec" {
+        inline = [
+            "echo 'SETUP'"
+        ]
+    }
+
+}
+
+resource "null_resource" "setup_nodes" {
+
+    count = var.node_custom_entrypoint != "" ? var.nodes_size : 0
+
+    depends_on = [
+        aws_instance.leader,
+        aws_instance.nodes
+    ]
+    connection {
+        host        = coalesce(aws_instance.nodes[count.index].public_ip, aws_instance.nodes[count.index].private_ip)
+        type        = "ssh"
+        user        = var.ssh_user
+        private_key = tls_private_key.loadtest.private_key_pem
+    }
+    provisioner "remote-exec" {
+        inline = [
+            "echo SETUP NODES ${count.index}",
+            "echo '${local.node_entrypoint}'",
+            "cd ${var.loadtest_dir_destination}",
+            "${local.node_entrypoint}",
+            "sleep 1"
+        ]
+    }
+
+    triggers = {
+        always_run = timestamp()
+    }
+
+    #LOCUST_EXPORTER_URI
+    #LOCUST_EXPORTER_TIMEOUT
+    #LOCUST_EXPORTER_WEB_LISTEN_ADDRESS
+    #LOCUST_EXPORTER_WEB_TELEMETRY_PATH
+    #locust_exporter_cmd="docker run --net=host containersol/locust_exporter"
+
+}
+
 
 resource "null_resource" "executor" {
 
     count = local.auto_execute ? 1 : 0
 
     depends_on = [
-        null_resource.spliter_execute_command,
+        aws_instance.leader,
         aws_instance.nodes,
-        aws_instance.leader
+        null_resource.setup_nodes,
+        null_resource.setup_leader,
+        null_resource.spliter_execute_command
     ]  
 
     connection {
@@ -74,10 +144,11 @@ resource "null_resource" "executor" {
     provisioner "remote-exec" {
         inline = [
             "echo DIR: ${var.loadtest_dir_destination}",
-            "ls -lah ${var.loadtest_dir_destination}",
             "cd ${var.loadtest_dir_destination}",
-            "echo ${local.entrypoint}",
-            local.entrypoint
+            "echo '${local.entrypoint}'",
+            "${local.entrypoint}",
+            "sleep 1"
+
         ]
     }
 

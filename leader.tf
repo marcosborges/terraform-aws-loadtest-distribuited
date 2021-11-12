@@ -11,7 +11,7 @@ resource "aws_instance" "leader" {
     vpc_security_group_ids = [aws_security_group.loadtest.id]
     
     iam_instance_profile = aws_iam_instance_profile.loadtest.name
-    user_data_base64 = local.leader_user_data_base64
+    user_data_base64 = local.setup_leader_base64
     
     #PUBLISHING SCRIPTS AND DATA
     key_name = aws_key_pair.loadtest.key_name
@@ -44,4 +44,54 @@ resource "aws_instance" "leader" {
             "nodes" = join(",", aws_instance.nodes.*.private_ip)
         }
     )
+}
+
+
+locals {
+   setup_leader_executors = {
+        jmeter = {
+            leader_user_data_base64 = base64encode(
+                templatefile(
+                    "${path.module}/scripts/entrypoint.leader.full.sh.tpl",
+                    {
+                        JVM_ARGS = var.nodes_jvm_args
+                    }
+                )
+            )
+        }
+        bzt = {
+            leader_user_data_base64 = base64encode(
+                templatefile(
+                    "${path.module}/scripts/entrypoint.leader.full.sh.tpl",
+                    {
+                        JVM_ARGS = var.nodes_jvm_args
+                    }
+                )
+            )
+        }
+        locust = {
+            leader_user_data_base64 = base64encode(
+                templatefile(
+                    "${path.module}/scripts/locust.entrypoint.leader.full.sh.tpl",
+                    {}
+                )
+            )
+        }
+        k6 = {
+            leader_user_data_base64 = base64encode(
+                templatefile(
+                    "${path.module}/scripts/k6.entrypoint.node.full.sh.tpl",
+                    {
+                        JVM_ARGS = var.nodes_jvm_args
+                    }
+                )
+            )
+        }
+    }
+     
+    setup_leader_executor = lookup(local.setup_leader_executors, var.executor, {
+        leader_user_data_base64 = var.leader_custom_setup_base64
+    })
+
+    setup_leader_base64 = local.setup_leader_executor.leader_user_data_base64
 }
