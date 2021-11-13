@@ -12,6 +12,7 @@ locals {
 
     # TRANSFER SCP COMMAND TEMPLATE
     scp_cmd_tpl = "scp ${local.ssh_skip_hosts_verification} ${var.loadtest_dir_destination}/{FILE_IN} ${var.ssh_user}@{HOST}:${var.loadtest_dir_destination}/{FILE_OUT}"
+    
     # RENDERIZATION CLEANUP SCP COMMAND
     leader_scp_cmds = flatten([
         for file in local.split_data_mass_filenames : [
