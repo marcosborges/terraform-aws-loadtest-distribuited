@@ -219,12 +219,12 @@ variable "plan_git_clone" {
     default = ""
 }
 
-
 variable "locust_replicas_per_node"{
     description = "Number of locust replicas per node. You should typically run one worker instance per processor core on the worker machines in order to utilize all their computing power."
     type = number
     default = 1
 }
+
 variable "locust_exporter" {
     type = object({
         enable = bool
@@ -236,4 +236,3 @@ variable "locust_exporter" {
     }
     description = "Export locust result to prometheus"
 }
-
