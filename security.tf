@@ -113,7 +113,3 @@ resource "null_resource" "key_pair_exporter" {
   }
 
 }
-
-
-
-
