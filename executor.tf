@@ -47,6 +47,7 @@ locals {
 
 
 resource "null_resource" "setup_leader" {
+
   depends_on = [
     aws_instance.leader,
     aws_instance.nodes

@@ -14,7 +14,7 @@ curl -XGET https://localhost:9200/_cat/plugins?v -u 'admin:admin' --insecure
 sudo /bin/systemctl daemon-reload
 sudo /bin/systemctl enable elasticsearch.service
 
-
+#ELK
 sudo rpm --import https://packages.elastic.co/GPG-KEY-elasticsearch
 
 # INSTALL FILEBEAT
@@ -24,7 +24,6 @@ sudo rpm -ivh filebeat-oss-7.1.0-x86_64.rpm
 # INSTALL LOGSTASH
 wget -q https://artifacts.elastic.co/downloads/logstash/logstash-oss-7.1.0.rpm
 sudo rpm -ivh logstash-oss-7.1.0.rpm
-
 
 
 # APACHE

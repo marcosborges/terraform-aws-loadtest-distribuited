@@ -43,7 +43,6 @@ variable "loadtest_entrypoint" {
 }
 
 
-
 variable "executor" {
   description = "Executor of the loadtest"
   type        = string
@@ -235,4 +234,20 @@ variable "locust_exporter" {
     data_mass_filenames = ["../plan/data/data.csv"]
   }
   description = "Export locust result to prometheus"
+}
+
+
+variable "elastic_exporter" {
+  type = object({
+    enable                     = bool
+    conf_logstash_file_content = string
+    conf_filebeat_file_content = string
+  })
+  default = {
+    enable                     = false
+    conf_logstash_file_content = ""
+    conf_filebeat_file_content = ""
+  }
+  description = "Export result to elastic"
+
 }

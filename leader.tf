@@ -30,7 +30,6 @@ resource "aws_instance" "leader" {
       "sudo chown ${var.ssh_user}:${var.ssh_user} ${var.loadtest_dir_destination} || true"
     ]
   }
-  #-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
 
   provisioner "file" {
     destination = var.loadtest_dir_destination
@@ -46,7 +45,6 @@ resource "aws_instance" "leader" {
   )
 }
 
-
 locals {
   setup_leader_executors = {
     jmeter = {
@@ -57,7 +55,7 @@ locals {
             JVM_ARGS = var.nodes_jvm_args
           }
         )
-      )
+      ),
     }
     bzt = {
       leader_user_data_base64 = base64encode(
@@ -94,4 +92,7 @@ locals {
   })
 
   setup_leader_base64 = local.setup_leader_executor.leader_user_data_base64
+
+  conf_logstash_file_content = local.setup_leader_executor.conf_logstash_file_content
+  conf_filebeat_file_content = local.setup_leader_executor.conf_filebeat_file_content
 }

@@ -1,7 +1,19 @@
 #!/bin/bash
 
 sudo yum update -y
-sudo yum install -y pcre2-devel.x86_64 python gcc python3-devel tzdata curl unzip bash java-11-amazon-corretto htop httpd k6
+sudo yum install -y pcre2-devel.x86_64 python gcc python3-devel tzdata curl unzip bash java-11-amazon-corretto htop httpd
+
+#ELK
+sudo rpm --import https://packages.elastic.co/GPG-KEY-elasticsearch
+
+# INSTALL FILEBEAT
+wget -q https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-oss-7.1.0-x86_64.rpm
+sudo rpm -ivh filebeat-oss-7.1.0-x86_64.rpm
+
+# INSTALL LOGSTASH
+wget -q https://artifacts.elastic.co/downloads/logstash/logstash-oss-7.1.0.rpm
+sudo rpm -ivh logstash-oss-7.1.0.rpm
+sudo /usr/share/logstash/bin/logstash-plugin install logstash-output-amazon_es
 
 # APACHE
 sudo systemctl enable httpd
@@ -58,7 +70,6 @@ sudo curl -L --silent https://search.maven.org/remotecontent?filepath=kg/apc/jme
 sudo curl -L --silent https://search.maven.org/remotecontent?filepath=kg/apc/jmeter-plugins-perfmon/2.1/jmeter-plugins-perfmon-2.1.jar -o $JMETER_PLUGINS_FOLDER/jmeter-plugins-perfmon-2.1.jar
 sudo curl -L --silent https://search.maven.org/remotecontent?filepath=kg/apc/jmeter-plugins-prmctl/0.4/jmeter-plugins-prmctl-0.4.jar  -o $JMETER_PLUGINS_FOLDER/jmeter-plugins-prmctl-0.4.jar
 sudo curl -L --silent https://search.maven.org/remotecontent?filepath=kg/apc/jmeter-plugins-tst/2.5/jmeter-plugins-tst-2.5.jar -o $JMETER_PLUGINS_FOLDER/jmeter-plugins-tst-2.5.jar
-
 
 mkdir -p ~/.ssh
 echo 'Host *' > ~/.ssh/config
