@@ -104,7 +104,6 @@ resource "null_resource" "setup_nodes" {
 
 }
 
-
 resource "null_resource" "executor" {
 
   count = local.auto_execute ? 1 : 0
@@ -114,7 +113,9 @@ resource "null_resource" "executor" {
     aws_instance.nodes,
     null_resource.setup_nodes,
     null_resource.setup_leader,
-    null_resource.spliter_execute_command
+    null_resource.spliter_execute_command,
+    null_resource.configure_exporter_on_leader,
+    null_resource.configure_exporter_on_nodes
   ]
 
   connection {

@@ -27,7 +27,8 @@ resource "aws_instance" "leader" {
       "echo '${tls_private_key.loadtest.private_key_pem}' > ~/.ssh/id_rsa",
       "chmod 600 ~/.ssh/id_rsa",
       "sudo mkdir -p ${var.loadtest_dir_destination} || true",
-      "sudo chown ${var.ssh_user}:${var.ssh_user} ${var.loadtest_dir_destination} || true"
+      "sudo chown ${var.ssh_user}:${var.ssh_user} ${var.loadtest_dir_destination} || true",
+      "echo \"PLAN_NAME=${var.name}\" >> /etc/environment"
     ]
   }
 
@@ -93,6 +94,4 @@ locals {
 
   setup_leader_base64 = local.setup_leader_executor.leader_user_data_base64
 
-  conf_logstash_file_content = local.setup_leader_executor.conf_logstash_file_content
-  conf_filebeat_file_content = local.setup_leader_executor.conf_filebeat_file_content
 }

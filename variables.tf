@@ -212,42 +212,37 @@ variable "node_custom_entrypoint" {
   default     = ""
 }
 
-variable "plan_git_clone" {
-  description = "Clone url from loadtest plan"
-  type        = string
-  default     = ""
-}
-
 variable "locust_replicas_per_node" {
   description = "Number of locust replicas per node. You should typically run one worker instance per processor core on the worker machines in order to utilize all their computing power."
   type        = number
   default     = 1
 }
 
-variable "locust_exporter" {
-  type = object({
-    enable              = bool
-    data_mass_filenames = list(string)
-  })
-  default = {
-    enable              = false
-    data_mass_filenames = ["../plan/data/data.csv"]
-  }
-  description = "Export locust result to prometheus"
-}
-
-
 variable "elastic_exporter" {
   type = object({
     enable                     = bool
+    custom                     = bool
+    elastic_hostname           = string
+    elastic_username           = string
+    elastic_password           = string
+    elastic_index              = string 
     conf_logstash_file_content = string
     conf_filebeat_file_content = string
+    startup_leader_commands    = list
+    startup_nodes_commands     = list
   })
   default = {
     enable                     = false
+    custom                     = false
+    elastic_hostname           = ""
+    elastic_username           = ""
+    elastic_password           = ""
+    elastic_index              = ""
     conf_logstash_file_content = ""
     conf_filebeat_file_content = ""
+    startup_leader_commands    = []
+    startup_nodes_commands     = []
   }
   description = "Export result to elastic"
-
+  sensitive = true
 }

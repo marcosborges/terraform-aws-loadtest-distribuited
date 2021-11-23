@@ -30,7 +30,8 @@ resource "aws_instance" "nodes" {
       "echo '${tls_private_key.loadtest.private_key_pem}' > ~/.ssh/id_rsa",
       "chmod 600 ~/.ssh/id_rsa",
       "sudo mkdir -p ${var.loadtest_dir_destination} || true",
-      "sudo chown ${var.ssh_user}:${var.ssh_user} ${var.loadtest_dir_destination} || true"
+      "sudo chown ${var.ssh_user}:${var.ssh_user} ${var.loadtest_dir_destination} || true",
+      "echo \"PLAN_NAME=${var.name}\" >> /etc/environment"
     ]
   }
 
