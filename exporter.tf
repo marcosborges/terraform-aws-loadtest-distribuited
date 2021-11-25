@@ -26,10 +26,10 @@ locals {
     }
     bzt = {
       conf_logstash_file_content = templatefile(
-        "${path.module}/scripts/.tpl", {}
+        "${path.module}/scripts/jmeter.elk.logstash.conf.tpl", {}
       )
       conf_filebeat_file_content = templatefile(
-        "${path.module}/scripts/.tpl", {}
+        "${path.module}/scripts/jmeter.elk.filebeat.inputs.yml.tpl", {}
       )
       startup_leader_commands = [
         "sudo systemctl enable logstash && sudo systemctl start logstash",
@@ -39,10 +39,10 @@ locals {
     }
     locust = {
       conf_logstash_file_content = templatefile(
-        "${path.module}/scripts/.tpl", {}
+        "${path.module}/scripts/jmeter.elk.logstash.conf.tpl", {}
       )
       conf_filebeat_file_content = templatefile(
-        "${path.module}/scripts/.tpl", {}
+        "${path.module}/scripts/jmeter.elk.filebeat.inputs.yml.tpl", {}
       )
       startup_leader_commands = [
         "sudo systemctl enable logstash && sudo systemctl start logstash",
@@ -52,10 +52,10 @@ locals {
     }
     k6 = {
       conf_logstash_file_content = templatefile(
-        "${path.module}/scripts/.tpl", {}
+        "${path.module}/scripts/jmeter.elk.logstash.conf.tpl", {}
       )
       conf_filebeat_file_content = templatefile(
-        "${path.module}/scripts/.tpl", {}
+        "${path.module}/scripts/jmeter.elk.filebeat.inputs.yml.tpl", {}
       )
       startup_leader_commands = [
         "sudo systemctl enable logstash && sudo systemctl start logstash",
@@ -155,3 +155,64 @@ resource "null_resource" "configure_exporter_on_nodes" {
   }
 
 }
+
+
+
+#TODO:  Error: file provisioner error
+#│ 
+#│   with module.loadtest.null_resource.configure_exporter_on_leader[0],
+#│   on ../../exporter.tf line 110, in resource "null_resource" "configure_exporter_on_leader":
+#│  110:   provisioner "file" {
+#│ 
+#│ Upload failed: scp: /etc/filebeat: Permission denied
+#╵
+#╷
+#│ Error: file provisioner error
+#│ 
+#│   with module.loadtest.null_resource.configure_exporter_on_nodes[0],
+#│   on ../../exporter.tf line 138, in resource "null_resource" "configure_exporter_on_nodes":
+#│  138:   provisioner "file" {
+#│ 
+#│ Upload failed: scp: /etc/filebeat/filebeat.yml: Permission denied
+#╵
+#╷
+#│ Error: file provisioner error
+#│ 
+#│   with module.loadtest.null_resource.configure_exporter_on_nodes[1],
+#│   on ../../exporter.tf line 138, in resource "null_resource" "configure_exporter_on_nodes":
+#│  138:   provisioner "file" {
+#│ 
+#│ Upload failed: scp: /etc/filebeat/filebeat.yml: Permission denied
+
+#provider "elasticsearch" {
+#  url = "http://127.0.0.1:9200"
+#}
+
+# Create an index template
+#resource "elasticsearch_index_template" "template_1" {
+#  name = "template_1"
+#  body = <<EOF
+#{
+#  "template": "te*",
+#  "settings": {
+#    "number_of_shards": 1
+#  },
+#  "mappings": {
+#    "type1": {
+#      "_source": {
+#        "enabled": false
+#      },
+#      "properties": {
+#        "host_name": {
+#          "type": "keyword"
+#        },
+#        "created_at": {
+#          "type": "date",
+#          "format": "EEE MMM dd HH:mm:ss Z YYYY"
+#        }
+#      }
+#    }
+#  }
+#}
+#EOF
+#}

@@ -228,8 +228,8 @@ variable "elastic_exporter" {
     elastic_index              = string 
     conf_logstash_file_content = string
     conf_filebeat_file_content = string
-    startup_leader_commands    = list
-    startup_nodes_commands     = list
+    startup_leader_commands    = list(string)
+    startup_nodes_commands     = list(string)
   })
   default = {
     enable                     = false

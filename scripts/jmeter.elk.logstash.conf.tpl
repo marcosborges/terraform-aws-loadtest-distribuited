@@ -47,11 +47,11 @@ filter {
 
 output {
     amazon_es {
-        hosts => ["https://${ELASTIC_HOSTNAME}:443"]
-        index => "${ELASTIC_INDEX}"
-        user => "${ELASTIC_USERNAME:elastic}"
-        password => "${ELASTIC_PASSWORD:changeme}"
+        hosts => ["$${ELASTIC_HOSTNAME}"]
+        index => "$${ELASTIC_INDEX}"
+        user => "$${ELASTIC_USERNAME:elastic}"
+        password => "$${ELASTIC_PASSWORD:changeme}"
         ssl => true
-        region => "${AWS_REGION:us-east-1}"
+        region => "$${AWS_REGION:us-east-1}"
     }
 }

@@ -19,6 +19,8 @@ output "nodes_private_ip" {
 }
 
 output "dashboard_url" {
-  value       = "http://${coalesce(module.loadtest.leader_public_ip, module.loadtest.leader_private_ip)}/${var.executor}"
+  value       = "https://${aws_elasticsearch_domain.demo.kibana_endpoint}"
   description = "The URL of the loadtest dashboard."
 }
+
+
