@@ -30,7 +30,7 @@ module "loadtest-jmeter" {
             -R "{NODES_IPS}" \
             -l /var/logs/loadtest -e -o /var/www/html \
             -Dnashorn.args=--no-deprecation-warning \
-            -Dserver.rmi.ssl.disable=true 
+            -Dserver.rmi.ssl.disable=true
     EOT
     subnet_id = data.aws_subnet.current.id
     elastic_exporter = {
@@ -45,17 +45,17 @@ module "loadtest-jmeter" {
 The default configuration vary from one executor to another. You can find the default configuration at the `elastic_exporter`.
 
 - ***JMeter***
-    - [Filebeat default configuration](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/blob/master/scripts/jmeter.elk.filebeat.inputs.yml.tpl) 
+    - [Filebeat default configuration](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/blob/master/scripts/jmeter.elk.filebeat.inputs.yml.tpl)
     - [LogStash default configuration](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/blob/master/scripts/jmeter.elk.logstash.conf.tpl)
 
 
 - ***Taurus***
-    - [Filebeat default configuration](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/blob/master/scripts/jmeter.elk.filebeat.inputs.yml.tpl) 
+    - [Filebeat default configuration](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/blob/master/scripts/jmeter.elk.filebeat.inputs.yml.tpl)
     - [LogStash default configuration](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/blob/master/scripts/jmeter.elk.logstash.conf.tpl)
 
 
 - ***Locust***
-    - [Filebeat default configuration](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/blob/master/scripts/jmeter.elk.filebeat.inputs.yml.tpl) 
+    - [Filebeat default configuration](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/blob/master/scripts/jmeter.elk.filebeat.inputs.yml.tpl)
     - [LogStash default configuration](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/blob/master/scripts/jmeter.elk.logstash.conf.tpl)
 
 ---
@@ -104,7 +104,7 @@ module "loadtest-locust" {
         )
         startup_leader_commands = ""
         startup_nodes_commands = ""
-    }   
+    }  
 }
 
 ```

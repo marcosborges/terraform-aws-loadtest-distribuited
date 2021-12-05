@@ -18,9 +18,7 @@ output "nodes_private_ip" {
   description = "The private IP address of the nodes instances."
 }
 
-output "dashboard_url" {
-  value       = "https://${aws_elasticsearch_domain.demo.kibana_endpoint}"
-  description = "The URL of the loadtest dashboard."
-}
-
-
+# output "dashboard_url" {
+#   value       = "https://${aws_elasticsearch_domain.demo.kibana_endpoint}"
+#   description = "The URL of the loadtest dashboard."
+# }

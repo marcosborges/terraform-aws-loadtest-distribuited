@@ -225,7 +225,7 @@ variable "elastic_exporter" {
     elastic_hostname           = string
     elastic_username           = string
     elastic_password           = string
-    elastic_index              = string 
+    elastic_index              = string
     conf_logstash_file_content = string
     conf_filebeat_file_content = string
     startup_leader_commands    = list(string)

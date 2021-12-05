@@ -1,4 +1,4 @@
-## ManAtWork   
+## ManAtWork
 
 module "loadtest" {
 
@@ -12,4 +12,3 @@ module "loadtest" {
 
     subnet_id = data.aws_subnet.current.id
 }
-

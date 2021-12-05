@@ -10,20 +10,20 @@ filter {
         separator => ","
         skip_header => true
         skip_empty_rows => true
-        columns => [ 
-            "timestamp", 
-            "elapsed", 
-            "label", 
-            "response-code", 
-            "response-message", 
-            "thread-name", 
-            "success", 
-            "bytes", 
-            "grp-threads", 
-            "all-threads", 
-            "latency", 
-            "hostname", 
-            "connect" 
+        columns => [
+            "timestamp",
+            "elapsed",
+            "label",
+            "response-code",
+            "response-message",
+            "thread-name",
+            "success",
+            "bytes",
+            "grp-threads",
+            "all-threads",
+            "latency",
+            "hostname",
+            "connect"
         ]
         convert => {
             "elapsed" => "integer"

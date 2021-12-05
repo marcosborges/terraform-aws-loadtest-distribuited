@@ -7,7 +7,7 @@ module "loadtest" {
     nodes_size = var.node_size
     executor = "locust"
     loadtest_dir_source = "../plan/"
-    
+
     # LEADER ENTRYPOINT
     loadtest_entrypoint = <<-EOT
         nohup locust \
@@ -16,7 +16,7 @@ module "loadtest" {
             --expect-workers=${var.node_size} \
             --master > locust-leader.out 2>&1 &
     EOT
-    
+
     # NODES ENTRYPOINT
     node_custom_entrypoint = <<-EOT
         nohup locust \

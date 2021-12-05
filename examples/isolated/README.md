@@ -1,5 +1,5 @@
 # Basic Config:
-    
+
 In its basic use it is necessary to provide information about which network will be used, where are your test plan scripts and finally define the number of nodes needed to carry out the desired load.
 
 ```hcl

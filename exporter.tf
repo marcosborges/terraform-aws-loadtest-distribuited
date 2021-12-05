@@ -159,29 +159,29 @@ resource "null_resource" "configure_exporter_on_nodes" {
 
 
 #TODO:  Error: file provisioner error
-#│ 
+#│
 #│   with module.loadtest.null_resource.configure_exporter_on_leader[0],
 #│   on ../../exporter.tf line 110, in resource "null_resource" "configure_exporter_on_leader":
 #│  110:   provisioner "file" {
-#│ 
+#│
 #│ Upload failed: scp: /etc/filebeat: Permission denied
 #╵
 #╷
 #│ Error: file provisioner error
-#│ 
+#│
 #│   with module.loadtest.null_resource.configure_exporter_on_nodes[0],
 #│   on ../../exporter.tf line 138, in resource "null_resource" "configure_exporter_on_nodes":
 #│  138:   provisioner "file" {
-#│ 
+#│
 #│ Upload failed: scp: /etc/filebeat/filebeat.yml: Permission denied
 #╵
 #╷
 #│ Error: file provisioner error
-#│ 
+#│
 #│   with module.loadtest.null_resource.configure_exporter_on_nodes[1],
 #│   on ../../exporter.tf line 138, in resource "null_resource" "configure_exporter_on_nodes":
 #│  138:   provisioner "file" {
-#│ 
+#│
 #│ Upload failed: scp: /etc/filebeat/filebeat.yml: Permission denied
 
 #provider "elasticsearch" {

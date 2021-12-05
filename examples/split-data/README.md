@@ -1,5 +1,5 @@
 # Split data between nodes
-    
+
 The implementation for dividing the data mass file between the load executing nodes aims to uncomplicate this existing friction in the execution of distributed load tests;
 
 Is very simple to activate this option.
@@ -14,12 +14,12 @@ See the example below...
 module "loadtest" {
 
     source  = "marcosborges/loadtest-distribuited/aws"
-    
+
     name = "nome-da-implantacao-spliter"
     executor = "jmeter"
     loadtest_dir_source = "../plan/"
     nodes_size = 2
-    
+
     loadtest_entrypoint = "jmeter -n -t jmeter/basic-with-data.jmx  -R \"{NODES_IPS}\" -l /loadtest/logs -e -o /var/www/html/jmeter -Dnashorn.args=--no-deprecation-warning -Dserver.rmi.ssl.disable=true -LDEBUG "
 
     split_data_mass_between_nodes = {

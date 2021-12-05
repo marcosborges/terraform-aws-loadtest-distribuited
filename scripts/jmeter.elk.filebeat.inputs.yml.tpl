@@ -40,5 +40,5 @@ output.logstash:
   #bulk_max_size: 2048
   #timeout: 30s
 
-#setup.ilm.enabled: false 
+#setup.ilm.enabled: false
 #ilm.enabled: false

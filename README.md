@@ -17,7 +17,7 @@ module "loadtest-distribuited" {
     executor = "jmeter"
     loadtest_dir_source = "examples/plan/"
     nodes_size = 2
-    
+
     loadtest_entrypoint = "jmeter -n -t jmeter/basic.jmx  -R \"{NODES_IPS}\" -l /var/logs/loadtest -e -o /var/www/html -Dnashorn.args=--no-deprecation-warning -Dserver.rmi.ssl.disable=true "
 
     subnet_id = data.aws_subnet.current.id
@@ -31,15 +31,15 @@ data "aws_subnet" "current" {
 }
 ```
 
-![bp](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/master/assets/example-basic.png) 
+![bp](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/master/assets/example-basic.png)
 
 
-![bp](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/master/assets/jmeter-dashboard.png) 
+![bp](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/master/assets/jmeter-dashboard.png)
 
 ---
 
 ## Basic usage with Taurus
-    
+
 In its basic use it is necessary to provide information about which network will be used, where are your test plan scripts and finally define the number of nodes needed to carry out the desired load.
 
 ```hcl
@@ -51,7 +51,7 @@ module "loadtest-distribuited" {
     executor = "jmeter"
     loadtest_dir_source = "examples/plan/"
     nodes_size = 2
-    
+
     loadtest_entrypoint = "bzt -q -o execution.0.distributed=\"{NODES_IPS}\" taurus/basic.yml"
 
     subnet_id = data.aws_subnet.current.id
@@ -69,7 +69,7 @@ data "aws_subnet" "current" {
 
 
 ## Advanced Config:
-    
+
 The module also provides advanced settings.
 
 1. It is possible to automate the splitting of the contents of a bulk file between the load nodes.
@@ -95,9 +95,9 @@ module "loadtest" {
     loadtest_entrypoint = "bzt -q -o execution.0.distributed=\"{NODES_IPS}\" taurus/basic.yml"
     nodes_size = 3
 
-    
+
     subnet_id = data.aws_subnet.current.id
-    
+
     #AUTO SPLIT
     split_data_mass_between_nodes = {
         enable = true
@@ -131,11 +131,11 @@ module "loadtest" {
         "Owner": "nome-do-proprietario",
         "Environment": "producao"
     }
- 
+
     # SETUP INSTANCE SIZE
     leader_instance_type = "t2.medium"
     nodes_intance_type = "t2.medium"
- 
+
     # SETUP JVM PARAMETERS
     leader_jvm_args = " -Xms12g -Xmx80g -XX:MaxMetaspaceSize=512m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 "
     nodes_jvm_args = " -Xms12g -Xmx80g -XX:MaxMetaspaceSize=512m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 "
@@ -149,7 +149,7 @@ module "loadtest" {
     # ASSOCIATE PUBLIC IP
     leader_associate_public_ip_address = true
     nodes_associate_public_ip_address = true
-    
+
     # ENABLE MONITORING
     leader_monitoring = true
     nodes_monitoring = true
@@ -159,7 +159,7 @@ module "loadtest" {
 
     # SETUP ALLOWEDs CIDRS FOR SSH ACCESS
     ssh_cidr_ingress_block = ["0.0.0.0/0"]
-    
+
 }
 
 data "aws_subnet" "current" {
@@ -191,13 +191,13 @@ The [C5](https://aws.amazon.com/pt/ec2/instance-types/c5/) family of instances i
 
 |Model|vCPU|Mem (GiB)|Storage (GiB)|Network Band. (Gbps)|
 |:---:|:---:|:---:|:---:|:---:|
-|c5n.large| 2 | 5.25	| EBS | 25 -> 4.750| 
-|c5n.xlarge| 4 | 10.5	| EBS | 25	-> 4.750| 
-|c5n.2xlarge| 8 | 21	| EBS | 25	-> 4.750| 
-|c5n.4xlarge| 16 | 42	| EBS | 25	4.750| 
-|c5n.9xlarge| 36 | 96   | EBS | 50	9.500| 
-|c5n.18xlarge| 72 | 192	| EBS | 100	19.000| 
-|c5n.metal| 72 | 192	| EBS | 100	19.000| 
+|c5n.large| 2 | 5.25	| EBS | 25 -> 4.750|
+|c5n.xlarge| 4 | 10.5	| EBS | 25	-> 4.750|
+|c5n.2xlarge| 8 | 21	| EBS | 25	-> 4.750|
+|c5n.4xlarge| 16 | 42	| EBS | 25	4.750|
+|c5n.9xlarge| 36 | 96   | EBS | 50	9.500|
+|c5n.18xlarge| 72 | 192	| EBS | 100	19.000|
+|c5n.metal| 72 | 192	| EBS | 100	19.000|
 
 ---
 

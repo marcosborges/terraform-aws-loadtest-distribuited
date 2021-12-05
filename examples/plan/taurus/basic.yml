@@ -6,7 +6,7 @@ execution:
 
 scenarios:
   quick-test:
-    #data-sources: 
+    #data-sources:
     #  - path: /loadtest/data/users.csv
     #    delimiter: ','
     #    quoted: true
@@ -31,7 +31,7 @@ modules:
     properties:
       mode: StrippedBatch
     memory-xmx: 10G
-    cmdline: -l /loadtest/logs -e -o /var/www/html/taurus 
+    cmdline: -l /loadtest/logs -e -o /var/www/html/taurus
 
 settings:
  verbose: false

@@ -28,5 +28,3 @@ touch /tmp/finished-setup
 
 # START JMETER NODE
 jmeter -s -Dserver.rmi.localport=50000 -Dserver_port=1099 -Dserver.rmi.ssl.disable=true -Djava.rmi.server.hostname=$PRIVATE_IP -j /tmp/jmeter-server.log
-
-

@@ -1,3 +1,19 @@
+module "vpc" {
+    source = "terraform-aws-modules/vpc/aws"
+    name = "loadtest-vpc"
+    cidr = "10.0.0.0/16"
+    azs             = ["us-east-1a"]
+    private_subnets = ["10.0.0.0/24"]
+    public_subnets = ["10.0.1.0/24"]
+    enable_nat_gateway = true
+    enable_vpn_gateway = true
+    tags = {
+      costcenter =	"riachuelo-shared"
+      environment =	"development"
+      squad =	"squad-cloud"
+    }
+}
+
 module "loadtest" {
 
   source = "../../"
@@ -18,11 +34,12 @@ module "loadtest" {
       -Dserver.rmi.ssl.disable=true
   EOT
   ssh_export_pem = true
-  subnet_id      = data.aws_subnet.current.id
+  subnet_id      = module.vpc.private_subnets[0]
+
   elastic_exporter = {
       enable = true
       custom = true
-      elastic_hostname = aws_elasticsearch_domain.demo.endpoint
+      elastic_hostname =  "localhost" #aws_elasticsearch_domain.demo.endpoint
       elastic_username = "elastic"
       elastic_password = "changeme"
       elastic_index = "loadtest-"
@@ -30,6 +47,12 @@ module "loadtest" {
       conf_filebeat_file_content = ""
       startup_leader_commands    = []
       startup_nodes_commands     = []
+  }
+
+  tags = {
+    costcenter =	"riachuelo-shared"
+    environment =	"development"
+    squad =	"cac"
   }
 }
 
@@ -64,8 +87,39 @@ resource "aws_elasticsearch_domain" "demo" {
     ]
   }
   POLICY
+
+  # vpc_options {
+  #   subnet_ids = [
+  #     data.aws_subnet_ids.selected.ids[0],
+  #     data.aws_subnet_ids.selected.ids[1],
+  #   ]
+
+  #   security_group_ids = [aws_security_group.es.id]
+  # }
+
+  # advanced_options = {
+  #   "rest.action.multi.allow_explicit_index" = "true"
+  # }
 }
 
-data "aws_region" "current" {}
 
-data "aws_caller_identity" "current" {}
+
+# resource "aws_security_group" "es" {
+#   name        = "elasticsearch-loadtest"
+#   description = "Managed by Terraform"
+#   vpc_id      = data.aws_vpc.selected.id
+
+#   ingress {
+#     from_port = 443
+#     to_port   = 443
+#     protocol  = "tcp"
+
+#     cidr_blocks = [
+#       data.aws_vpc.selected.cidr_block,
+#     ]
+#   }
+# }
+
+# resource "aws_iam_service_linked_role" "es" {
+#   aws_service_name = "es.amazonaws.com"
+# }

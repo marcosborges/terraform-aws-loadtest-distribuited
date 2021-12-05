@@ -13,7 +13,7 @@ class Quickstart(HttpUser):
     def microsoft(self):
         self.client.request_name="microsoft"
         self.client.get("https://microsoft.com/")
-    
+
     @task
     def facebook(self):
         self.client.request_name="facebook"
