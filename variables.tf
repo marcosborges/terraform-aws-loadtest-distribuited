@@ -108,13 +108,13 @@ variable "tags" {
 variable "leader_associate_public_ip_address" {
   description = "Associate public IP address to the leader"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "nodes_associate_public_ip_address" {
   description = "Associate public IP address to the nodes"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "leader_monitoring" {
@@ -138,13 +138,13 @@ variable "ssh_user" {
 variable "ssh_cidr_ingress_blocks" {
   description = "SSH user for the leader"
   type        = list(any)
-  default     = ["0.0.0.0/0"]
+  default     = [] #["0.0.0.0/0"]
 }
 
 variable "web_cidr_ingress_blocks" {
   description = "web for the leader"
   type        = list(any)
-  default     = ["0.0.0.0/0"]
+  default     = [] #["0.0.0.0/0"]
 }
 
 variable "ssh_export_pem" {
@@ -244,5 +244,5 @@ variable "elastic_exporter" {
     startup_nodes_commands     = []
   }
   description = "Export result to elastic"
-  sensitive = true
+  sensitive   = true
 }

@@ -6,11 +6,13 @@ resource "aws_security_group" "loadtest" {
 
   vpc_id = data.aws_vpc.current.id
 
+  #tfsec:aws-vpc-add-description-to-security-group
   ingress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
-    self      = true
+    description = "all traffic between nodes and leader"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    self        = true
   }
 
   ingress {
@@ -38,9 +40,11 @@ resource "aws_security_group" "loadtest" {
   }
 
   egress {
+    description = "outbound traffic"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
+    #tfsec:ignore:aws-vpc-no-public-egress-sg
     cidr_blocks = ["0.0.0.0/0"]
   }
 

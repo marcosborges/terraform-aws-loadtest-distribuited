@@ -14,6 +14,9 @@ resource "aws_instance" "nodes" {
   iam_instance_profile = aws_iam_instance_profile.loadtest.name
   user_data_base64     = local.setup_nodes_base64
 
+  metadata_options {
+    http_tokens = "required"
+  }
 
   key_name = aws_key_pair.loadtest.key_name
   connection {

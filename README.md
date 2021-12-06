@@ -201,8 +201,7 @@ The [C5](https://aws.amazon.com/pt/ec2/instance-types/c5/) family of instances i
 
 ---
 
-
-<!-- BEGIN_TF_DOCS -->
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
 | Name | Version |
@@ -214,9 +213,9 @@ The [C5](https://aws.amazon.com/pt/ec2/instance-types/c5/) family of instances i
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.63 |
-| <a name="provider_null"></a> [null](#provider\_null) | n/a |
-| <a name="provider_tls"></a> [tls](#provider\_tls) | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.68.0 |
+| <a name="provider_null"></a> [null](#provider\_null) | 3.1.0 |
+| <a name="provider_tls"></a> [tls](#provider\_tls) | 3.1.0 |
 
 ## Modules
 
@@ -232,10 +231,13 @@ No modules.
 | [aws_instance.nodes](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance) | resource |
 | [aws_key_pair.loadtest](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/key_pair) | resource |
 | [aws_security_group.loadtest](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
+| [null_resource.configure_exporter_on_leader](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [null_resource.configure_exporter_on_nodes](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [null_resource.executor](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [null_resource.key_pair_exporter](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
-| [null_resource.publish_split_data](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
-| [null_resource.split_data](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [null_resource.setup_leader](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [null_resource.setup_nodes](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [null_resource.spliter_execute_command](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [tls_private_key.loadtest](https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/private_key) | resource |
 | [aws_ami.amazon_linux_2](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_subnet.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnet) | data source |
@@ -247,36 +249,40 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_auto_execute"></a> [auto\_execute](#input\_auto\_execute) | Execute Loadtest after leader and nodes available | `bool` | `true` | no |
 | <a name="input_auto_setup"></a> [auto\_setup](#input\_auto\_setup) | Install and configure instances Amazon Linux2 with JMeter and Taurus | `bool` | `true` | no |
+| <a name="input_elastic_exporter"></a> [elastic\_exporter](#input\_elastic\_exporter) | Export result to elastic | <pre>object({<br>    enable                     = bool<br>    custom                     = bool<br>    elastic_hostname           = string<br>    elastic_username           = string<br>    elastic_password           = string<br>    elastic_index              = string<br>    conf_logstash_file_content = string<br>    conf_filebeat_file_content = string<br>    startup_leader_commands    = list(string)<br>    startup_nodes_commands     = list(string)<br>  })</pre> | <pre>{<br>  "conf_filebeat_file_content": "",<br>  "conf_logstash_file_content": "",<br>  "custom": false,<br>  "elastic_hostname": "",<br>  "elastic_index": "",<br>  "elastic_password": "",<br>  "elastic_username": "",<br>  "enable": false,<br>  "startup_leader_commands": [],<br>  "startup_nodes_commands": []<br>}</pre> | no |
 | <a name="input_executor"></a> [executor](#input\_executor) | Executor of the loadtest | `string` | `"jmeter"` | no |
 | <a name="input_jmeter_version"></a> [jmeter\_version](#input\_jmeter\_version) | JMeter version | `string` | `"5.4.1"` | no |
 | <a name="input_leader_ami_id"></a> [leader\_ami\_id](#input\_leader\_ami\_id) | Id of the AMI | `string` | `""` | no |
-| <a name="input_leader_associate_public_ip_address"></a> [leader\_associate\_public\_ip\_address](#input\_leader\_associate\_public\_ip\_address) | Associate public IP address to the leader | `bool` | `true` | no |
+| <a name="input_leader_associate_public_ip_address"></a> [leader\_associate\_public\_ip\_address](#input\_leader\_associate\_public\_ip\_address) | Associate public IP address to the leader | `bool` | `false` | no |
 | <a name="input_leader_custom_setup_base64"></a> [leader\_custom\_setup\_base64](#input\_leader\_custom\_setup\_base64) | Custom bash script encoded in base64 to setup the leader | `string` | `""` | no |
-| <a name="input_leader_instance_type"></a> [leader\_instance\_type](#input\_leader\_instance\_type) | Instance type of the cluster leader | `string` | `"t2.medium"` | no |
-| <a name="input_leader_jvm_args"></a> [leader\_jvm\_args](#input\_leader\_jvm\_args) | JVM Leader JVM\_ARGS | `string` | `" -Xms2g -Xmx2g -XX:MaxMetaspaceSize=256m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 "` | no |
+| <a name="input_leader_instance_type"></a> [leader\_instance\_type](#input\_leader\_instance\_type) | Instance type of the cluster leader | `string` | `"c5n.large"` | no |
+| <a name="input_leader_jvm_args"></a> [leader\_jvm\_args](#input\_leader\_jvm\_args) | JVM Leader JVM\_ARGS | `string` | `" -Xms2g -Xmx3g -Dnashorn.args=--no-deprecation-warning  "` | no |
 | <a name="input_leader_monitoring"></a> [leader\_monitoring](#input\_leader\_monitoring) | Enable monitoring for the leader | `bool` | `true` | no |
-| <a name="input_leader_tags"></a> [leader\_tags](#input\_leader\_tags) | Tags of the cluster leader | `map` | `{}` | no |
+| <a name="input_leader_tags"></a> [leader\_tags](#input\_leader\_tags) | Tags of the cluster leader | `map(any)` | `{}` | no |
 | <a name="input_loadtest_dir_destination"></a> [loadtest\_dir\_destination](#input\_loadtest\_dir\_destination) | Path to the destination loadtest directory | `string` | `"/loadtest"` | no |
 | <a name="input_loadtest_dir_source"></a> [loadtest\_dir\_source](#input\_loadtest\_dir\_source) | Path to the source loadtest directory | `string` | n/a | yes |
 | <a name="input_loadtest_entrypoint"></a> [loadtest\_entrypoint](#input\_loadtest\_entrypoint) | Path to the entrypoint command | `string` | `"bzt -q -o execution.0.distributed=\"{NODES_IPS}\" *.yml"` | no |
+| <a name="input_locust_plan_filename"></a> [locust\_plan\_filename](#input\_locust\_plan\_filename) | Filename locust plan | `string` | `""` | no |
+| <a name="input_locust_replicas_per_node"></a> [locust\_replicas\_per\_node](#input\_locust\_replicas\_per\_node) | Number of locust replicas per node. You should typically run one worker instance per processor core on the worker machines in order to utilize all their computing power. | `number` | `1` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name of the provision | `string` | n/a | yes |
+| <a name="input_node_custom_entrypoint"></a> [node\_custom\_entrypoint](#input\_node\_custom\_entrypoint) | Path to the entrypoint command | `string` | `""` | no |
 | <a name="input_nodes_ami_id"></a> [nodes\_ami\_id](#input\_nodes\_ami\_id) | Id of the AMI | `string` | `""` | no |
-| <a name="input_nodes_associate_public_ip_address"></a> [nodes\_associate\_public\_ip\_address](#input\_nodes\_associate\_public\_ip\_address) | Associate public IP address to the nodes | `bool` | `true` | no |
+| <a name="input_nodes_associate_public_ip_address"></a> [nodes\_associate\_public\_ip\_address](#input\_nodes\_associate\_public\_ip\_address) | Associate public IP address to the nodes | `bool` | `false` | no |
 | <a name="input_nodes_custom_setup_base64"></a> [nodes\_custom\_setup\_base64](#input\_nodes\_custom\_setup\_base64) | Custom bash script encoded in base64 to setup the nodes | `string` | `""` | no |
-| <a name="input_nodes_intance_type"></a> [nodes\_intance\_type](#input\_nodes\_intance\_type) | Instance type of the cluster nodes | `string` | `"t2.medium"` | no |
-| <a name="input_nodes_jvm_args"></a> [nodes\_jvm\_args](#input\_nodes\_jvm\_args) | JVM Nodes JVM\_ARGS | `string` | `"-Xms2g -Xmx2g -XX:MaxMetaspaceSize=256m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 -Dnashorn.args=--no-deprecation-warning -XX:+HeapDumpOnOutOfMemoryError "` | no |
+| <a name="input_nodes_intance_type"></a> [nodes\_intance\_type](#input\_nodes\_intance\_type) | Instance type of the cluster nodes | `string` | `"c5n.xlarge"` | no |
+| <a name="input_nodes_jvm_args"></a> [nodes\_jvm\_args](#input\_nodes\_jvm\_args) | JVM Nodes JVM\_ARGS | `string` | `"-Xms2g -Xmx4g -Dnashorn.args=--no-deprecation-warning"` | no |
 | <a name="input_nodes_monitoring"></a> [nodes\_monitoring](#input\_nodes\_monitoring) | Enable monitoring for the leader | `bool` | `true` | no |
 | <a name="input_nodes_size"></a> [nodes\_size](#input\_nodes\_size) | Total number of nodes in the cluster | `number` | `2` | no |
-| <a name="input_nodes_tags"></a> [nodes\_tags](#input\_nodes\_tags) | Tags of the cluster nodes | `map` | `{}` | no |
+| <a name="input_nodes_tags"></a> [nodes\_tags](#input\_nodes\_tags) | Tags of the cluster nodes | `map(any)` | `{}` | no |
 | <a name="input_region"></a> [region](#input\_region) | Name of the region | `string` | `"us-east-1"` | no |
-| <a name="input_split_data_mass_between_nodes"></a> [split\_data\_mass\_between\_nodes](#input\_split\_data\_mass\_between\_nodes) | Split data mass between nodes | <pre>object({<br>        enable = bool<br>        data_mass_filename = string<br>    })</pre> | <pre>{<br>  "data_mass_filename": "../plan/data/data.csv",<br>  "enable": false<br>}</pre> | no |
-| <a name="input_ssh_cidr_ingress_blocks"></a> [ssh\_cidr\_ingress\_blocks](#input\_ssh\_cidr\_ingress\_blocks) | SSH user for the leader | `list` | <pre>[<br>  "0.0.0.0/0"<br>]</pre> | no |
+| <a name="input_split_data_mass_between_nodes"></a> [split\_data\_mass\_between\_nodes](#input\_split\_data\_mass\_between\_nodes) | Split data mass between nodes | <pre>object({<br>    enable              = bool<br>    data_mass_filenames = list(string)<br>  })</pre> | <pre>{<br>  "data_mass_filenames": [],<br>  "enable": false<br>}</pre> | no |
+| <a name="input_ssh_cidr_ingress_blocks"></a> [ssh\_cidr\_ingress\_blocks](#input\_ssh\_cidr\_ingress\_blocks) | SSH user for the leader | `list(any)` | `[]` | no |
 | <a name="input_ssh_export_pem"></a> [ssh\_export\_pem](#input\_ssh\_export\_pem) | n/a | `bool` | `false` | no |
 | <a name="input_ssh_user"></a> [ssh\_user](#input\_ssh\_user) | SSH user for the leader | `string` | `"ec2-user"` | no |
 | <a name="input_subnet_id"></a> [subnet\_id](#input\_subnet\_id) | Id of the subnet | `string` | n/a | yes |
-| <a name="input_tags"></a> [tags](#input\_tags) | Common tags | `map` | `{}` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | Common tags | `map(any)` | `{}` | no |
 | <a name="input_taurus_version"></a> [taurus\_version](#input\_taurus\_version) | Taurus version | `string` | `"1.16.0"` | no |
-| <a name="input_web_cidr_ingress_blocks"></a> [web\_cidr\_ingress\_blocks](#input\_web\_cidr\_ingress\_blocks) | web for the leader | `list` | <pre>[<br>  "0.0.0.0/0"<br>]</pre> | no |
+| <a name="input_web_cidr_ingress_blocks"></a> [web\_cidr\_ingress\_blocks](#input\_web\_cidr\_ingress\_blocks) | web for the leader | `list(any)` | `[]` | no |
 
 ## Outputs
 
@@ -286,4 +292,4 @@ No modules.
 | <a name="output_leader_public_ip"></a> [leader\_public\_ip](#output\_leader\_public\_ip) | The public IP address of the leader server instance. |
 | <a name="output_nodes_private_ip"></a> [nodes\_private\_ip](#output\_nodes\_private\_ip) | The private IP address of the nodes instances. |
 | <a name="output_nodes_public_ip"></a> [nodes\_public\_ip](#output\_nodes\_public\_ip) | The public IP address of the nodes instances. |
-<!-- END_TF_DOCS -->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
