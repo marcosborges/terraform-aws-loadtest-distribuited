@@ -1,4 +1,6 @@
 resource "aws_instance" "leader" {
+  #checkov:skip=CKV_AWS_135
+  #checkov:skip=CKV_AWS_8
 
   ami = local.leader_ami_id
 

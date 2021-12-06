@@ -1,17 +1,18 @@
 module "vpc" {
-    source = "terraform-aws-modules/vpc/aws"
-    name = "loadtest-vpc"
-    cidr = "10.0.0.0/16"
-    azs             = ["us-east-1a"]
-    private_subnets = ["10.0.0.0/24"]
-    public_subnets = ["10.0.1.0/24"]
-    enable_nat_gateway = true
-    enable_vpn_gateway = true
-    tags = {
-      costcenter =	"riachuelo-shared"
-      environment =	"development"
-      squad =	"squad-cloud"
-    }
+  source             = "terraform-aws-modules/vpc/aws"
+  version            = "3.11.0"
+  name               = "loadtest-vpc"
+  cidr               = "10.0.0.0/16"
+  azs                = ["us-east-1a"]
+  private_subnets    = ["10.0.0.0/24"]
+  public_subnets     = ["10.0.1.0/24"]
+  enable_nat_gateway = true
+  enable_vpn_gateway = true
+  tags = {
+    costcenter  = "riachuelo-shared"
+    environment = "development"
+    squad       = "squad-cloud"
+  }
 }
 
 module "loadtest" {
@@ -33,30 +34,38 @@ module "loadtest" {
       -Dnashorn.args=--no-deprecation-warning \
       -Dserver.rmi.ssl.disable=true
   EOT
-  ssh_export_pem = true
-  subnet_id      = module.vpc.private_subnets[0]
+  ssh_export_pem      = true
+  subnet_id           = module.vpc.private_subnets[0]
 
   elastic_exporter = {
-      enable = true
-      custom = true
-      elastic_hostname =  "localhost" #aws_elasticsearch_domain.demo.endpoint
-      elastic_username = "elastic"
-      elastic_password = "changeme"
-      elastic_index = "loadtest-"
-      conf_logstash_file_content = ""
-      conf_filebeat_file_content = ""
-      startup_leader_commands    = []
-      startup_nodes_commands     = []
+    enable                     = true
+    custom                     = true
+    elastic_hostname           = "localhost" #aws_elasticsearch_domain.demo.endpoint
+    elastic_username           = "elastic"
+    elastic_password           = "changeme"
+    elastic_index              = "loadtest-"
+    conf_logstash_file_content = ""
+    conf_filebeat_file_content = ""
+    startup_leader_commands    = []
+    startup_nodes_commands     = []
   }
 
   tags = {
-    costcenter =	"riachuelo-shared"
-    environment =	"development"
-    squad =	"cac"
+    costcenter  = "riachuelo-shared"
+    environment = "development"
+    squad       = "cac"
   }
 }
 
+#tfsec:ignore:aws-elastic-search-enable-domain-logging tfsec:ignore:aws-elastic-search-enable-in-transit-encryption tfsec:ignore:aws-elastic-search-enable-in-transit-encryption  tfsec:ignore:aws-elastic-search-enforce-https tfsec:ignore:aws-elastic-search-enable-logging tfsec:ignore:aws-elastic-service-enable-domain-encryption
 resource "aws_elasticsearch_domain" "demo" {
+  #ts:skip=AC_AWS_0112
+  #ts:skip=AC_AWS_0105
+  #ts:skip=AC_AWS_0468
+  #checkov:skip=CKV_AWS_84
+  #checkov:skip=CKV_AWS_83
+  #checkov:skip=CKV_AWS_5
+  #checkov:skip=CKV_AWS_137
   domain_name           = "demo-loadtest"
   elasticsearch_version = "7.10"
   cluster_config {

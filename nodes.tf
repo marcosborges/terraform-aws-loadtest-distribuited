@@ -1,4 +1,6 @@
 resource "aws_instance" "nodes" {
+  #checkov:skip=CKV_AWS_135
+  #checkov:skip=CKV_AWS_8
 
   count = var.nodes_size
 

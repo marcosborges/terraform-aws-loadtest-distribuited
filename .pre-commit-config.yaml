@@ -87,22 +87,20 @@ repos:
     - id: terraform_validate
     - id: terraform_providers_lock
     - id: terraform_tflint
-    - id: terragrunt_fmt
     - id: terraform_tfsec
 
-    # - id: checkov
-    #   name: Checkov
-    #   description: Runs checkov on Terraform templates.
-    #   entry: checkov -d .
-    #   language: python
-    #   pass_filenames: false
-    #   always_run: false
-    #   files: \.tf$
-    #   exclude: \.+.terraform\/.*$
-    #   require_serial: true
+    - id: checkov
+      name: Checkov
+      description: Runs checkov on Terraform templates.
+      entry: checkov -d .
+      pass_filenames: false
+      always_run: false
+      files: \.tf$
+      exclude: \.+.terraform\/.*$
+      require_serial: true
 
-    # - id: terrascan
-    #   name: terrascan
-    #   description: Runs terrascan on Terraform templates.
-    #   language: script
-    #   entry: terrascan.sh
+    - id: terrascan
+      name: terrascan
+      description: Runs terrascan on Terraform templates.
+      language: script
+      entry: terrascan.sh
