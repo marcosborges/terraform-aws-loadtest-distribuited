@@ -16,7 +16,8 @@ resource "aws_instance" "leader" {
   user_data_base64     = local.setup_leader_base64
 
   metadata_options {
-    http_tokens = "required"
+    http_endpoint = "enabled"
+    http_tokens   = "required"
   }
 
   #PUBLISHING SCRIPTS AND DATA

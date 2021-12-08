@@ -1,4 +1,4 @@
 variable "executor" {
-    description = "Executor name"
-    default = "jmeter"
+  description = "Executor name"
+  default     = "jmeter"
 }

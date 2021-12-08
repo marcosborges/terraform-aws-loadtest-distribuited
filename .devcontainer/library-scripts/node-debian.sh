@@ -126,12 +126,12 @@ su ${USERNAME} -c "$(cat << EOF
     umask 0002
     # Do not update profile - we'll do this manually
     export PROFILE=/dev/null
-    curl -so- https://raw.githubusercontent.com/nvm-sh/nvm/v${NVM_VERSION}/install.sh | bash 
+    curl -so- https://raw.githubusercontent.com/nvm-sh/nvm/v${NVM_VERSION}/install.sh | bash
     source ${NVM_DIR}/nvm.sh
     if [ "${NODE_VERSION}" != "" ]; then
         nvm alias default ${NODE_VERSION}
     fi
-    nvm clear-cache 
+    nvm clear-cache
 EOF
 )" 2>&1
 # Update rc files

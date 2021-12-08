@@ -104,7 +104,7 @@ module "loadtest-locust" {
         )
         startup_leader_commands = ""
         startup_nodes_commands = ""
-    }  
+    }
 }
 
 ```

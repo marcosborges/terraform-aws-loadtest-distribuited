@@ -4,7 +4,7 @@
 	"name": "Azure Terraform (Community)",
 	"build": {
 		"dockerfile": "Dockerfile",
-		"args": { 
+		"args": {
 			"TERRAFORM_VERSION": "0.14.5",
 			"TFLINT_VERSION": "0.24.1",
 			"TERRAGRUNT_VERSION": "0.28.1",
@@ -20,7 +20,7 @@
 		// Sets environment variables required for terrafom remote backend
 		"TF_BACKEND_RESOURCE_GROUP" : "${containerEnv:TF_BACKEND_RESOURCE_GROUP}",
 		"TF_BACKEND_LOCATION": "${containerEnv:TF_BACKEND_LOCATION}",
-		"TF_BACKEND_STORAGE_ACCOUNT" : "${containerEnv:TF_BACKEND_STORAGE_ACCOUNT}",                
+		"TF_BACKEND_STORAGE_ACCOUNT" : "${containerEnv:TF_BACKEND_STORAGE_ACCOUNT}",
 		"TF_BACKEND_CONTAINER" : "${containerEnv:TF_BACKEND_CONTAINER}",
 		"TF_BACKEND_KEY" : "${containerEnv:TF_BACKEND_KEY}"
 
@@ -28,7 +28,7 @@
 		// "TF_VAR_rg_name":  "${containerEnv:TF_VAR_RG_NAME}"
 	},
 	// Set *default* container specific settings.json values on container create.
-	"settings": { 
+	"settings": {
 		"terraform.languageServer": {
 			"enabled": true,
 			"args": []

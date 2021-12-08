@@ -17,7 +17,8 @@ resource "aws_instance" "nodes" {
   user_data_base64     = local.setup_nodes_base64
 
   metadata_options {
-    http_tokens = "required"
+    http_tokens   = "required"
+    http_endpoint = "enabled"
   }
 
   key_name = aws_key_pair.loadtest.key_name

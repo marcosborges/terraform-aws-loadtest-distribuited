@@ -1,15 +1,15 @@
 module "loadtest" {
 
-    source = "../../"
-    #source  = "marcosborges/loadtest-distribuited/aws"
+  source = "../../"
+  #source  = "marcosborges/loadtest-distribuited/aws"
 
-    name = "nome-da-implantacao-locust"
-    nodes_size = var.node_size
-    executor = "locust"
-    loadtest_dir_source = "../plan/"
+  name                = "nome-da-implantacao-locust"
+  nodes_size          = var.node_size
+  executor            = "locust"
+  loadtest_dir_source = "../plan/"
 
-    # LEADER ENTRYPOINT
-    loadtest_entrypoint = <<-EOT
+  # LEADER ENTRYPOINT
+  loadtest_entrypoint = <<-EOT
         nohup locust \
             -f ${var.locust_plan_filename} \
             --web-port=8080 \
@@ -17,16 +17,16 @@ module "loadtest" {
             --master > locust-leader.out 2>&1 &
     EOT
 
-    # NODES ENTRYPOINT
-    node_custom_entrypoint = <<-EOT
+  # NODES ENTRYPOINT
+  node_custom_entrypoint = <<-EOT
         nohup locust \
             -f ${var.locust_plan_filename} \
             --worker \
             --master-host={LEADER_IP} > locust-worker.out 2>&1 &
     EOT
 
-    subnet_id = data.aws_subnet.current.id
-    locust_plan_filename = var.locust_plan_filename
-    ssh_export_pem = false
+  subnet_id            = data.aws_subnet.current.id
+  locust_plan_filename = var.locust_plan_filename
+  ssh_export_pem       = false
 
 }

@@ -24,7 +24,6 @@ repos:
     # Security
     - id: detect-aws-credentials
       args: ['--allow-missing-credentials']
-
     - id: detect-private-key
 
     - id: check-byte-order-marker
@@ -32,43 +31,24 @@ repos:
       description: forbids files which have a utf-8 byte-order marker.
       entry: check-byte-order-marker
       types: [text]
-
-    - id: check-shebang-scripts-are-executable
-
     - id: check-vcs-permalinks
       name: check vcs permalinks
       description: ensures that links to vcs websites are permalinks.
       entry: check-vcs-permalinks
       language: python
       types: [text]
-
-    - id: check-yaml
-      name: check yaml
-      description: checks yaml files for parseable syntax.
-      entry: check-yaml
-      language: python
-      types: [yaml]
-
     - id: fix-byte-order-marker
       name: fix utf-8 byte order marker
       description: removes utf-8 byte order marker.
       entry: fix-byte-order-marker
       language: python
       types: [text]
-
-    - id: mixed-line-ending
-      name: mixed line ending
-      description: replaces or checks mixed line ending.
-      entry: mixed-line-ending
-      types: [text]
-
     - id: no-commit-to-branch
       name: "don't commit to branch"
       entry: no-commit-to-branch
       language: python
       pass_filenames: false
       always_run: true
-
     - id: trailing-whitespace
       name: trim trailing whitespace
       description: trims trailing whitespace.
@@ -99,8 +79,15 @@ repos:
       exclude: \.+.terraform\/.*$
       require_serial: true
 
-    - id: terrascan
-      name: terrascan
-      description: Runs terrascan on Terraform templates.
-      language: script
-      entry: terrascan.sh
+    # - id: terrascan
+    #   name: terrascan
+    #   description: Runs terrascan on Terraform templates.
+    #   language: script
+    #   entry: terrascan.sh
+
+- repo: https://github.com/compilerla/conventional-pre-commit
+  rev: v1.2.0
+  hooks:
+    - id: conventional-pre-commit
+      stages: [commit-msg]
+      args: [] # optional: list of Conventional Commits types to allow
