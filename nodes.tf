@@ -3,7 +3,7 @@ resource "aws_instance" "nodes" {
   count = var.nodes_size
 
   ami           = local.nodes_ami_id
-  instance_type = var.nodes_intance_type
+  instance_type = var.nodes_instance_type
 
   associate_public_ip_address = var.nodes_associate_public_ip_address
   monitoring                  = var.nodes_monitoring

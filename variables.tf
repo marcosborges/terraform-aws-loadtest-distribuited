@@ -85,7 +85,7 @@ variable "nodes_ami_id" {
   default     = ""
 }
 
-variable "nodes_intance_type" {
+variable "nodes_instance_type" {
   description = "Instance type of the cluster nodes"
   type        = string
   default     = "c5n.xlarge"
