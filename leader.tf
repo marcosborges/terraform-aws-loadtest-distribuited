@@ -39,10 +39,7 @@ resource "aws_instance" "leader" {
 
   tags = merge(
     var.tags,
-    var.leader_tags,
-    {
-      "nodes" = join(",", aws_instance.nodes.*.private_ip)
-    }
+    var.leader_tags
   )
 }
 

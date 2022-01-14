@@ -134,7 +134,7 @@ module "loadtest" {
  
     # SETUP INSTANCE SIZE
     leader_instance_type = "t2.medium"
-    nodes_intance_type = "t2.medium"
+    nodes_instance_type = "t2.medium"
  
     # SETUP JVM PARAMETERS
     leader_jvm_args = " -Xms12g -Xmx80g -XX:MaxMetaspaceSize=512m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 "
@@ -263,7 +263,7 @@ No modules.
 | <a name="input_nodes_ami_id"></a> [nodes\_ami\_id](#input\_nodes\_ami\_id) | Id of the AMI | `string` | `""` | no |
 | <a name="input_nodes_associate_public_ip_address"></a> [nodes\_associate\_public\_ip\_address](#input\_nodes\_associate\_public\_ip\_address) | Associate public IP address to the nodes | `bool` | `true` | no |
 | <a name="input_nodes_custom_setup_base64"></a> [nodes\_custom\_setup\_base64](#input\_nodes\_custom\_setup\_base64) | Custom bash script encoded in base64 to setup the nodes | `string` | `""` | no |
-| <a name="input_nodes_intance_type"></a> [nodes\_intance\_type](#input\_nodes\_intance\_type) | Instance type of the cluster nodes | `string` | `"t2.medium"` | no |
+| <a name="input_nodes_instance_type"></a> [nodes\_instance\_type](#input\_nodes\_instance\_type) | Instance type of the cluster nodes | `string` | `"t2.medium"` | no |
 | <a name="input_nodes_jvm_args"></a> [nodes\_jvm\_args](#input\_nodes\_jvm\_args) | JVM Nodes JVM\_ARGS | `string` | `"-Xms2g -Xmx2g -XX:MaxMetaspaceSize=256m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20 -Dnashorn.args=--no-deprecation-warning -XX:+HeapDumpOnOutOfMemoryError "` | no |
 | <a name="input_nodes_monitoring"></a> [nodes\_monitoring](#input\_nodes\_monitoring) | Enable monitoring for the leader | `bool` | `true` | no |
 | <a name="input_nodes_size"></a> [nodes\_size](#input\_nodes\_size) | Total number of nodes in the cluster | `number` | `2` | no |
