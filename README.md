@@ -1,6 +1,6 @@
 # AWS LoadTest Distribuited Terraform Module
 
-This module proposes a simple and uncomplicated way to run your load tests created with JMeter or TaurusBzt on AWS as IaaS.
+This module proposes a simple and uncomplicated way to run your load tests created with JMeter, Locust, K6 or TaurusBzt on AWS as IaaS.
 
 
 ![bp](https://github.com/marcosborges/terraform-aws-loadtest-distribuited/raw/master/assets/blueprint.png)
@@ -53,6 +53,47 @@ module "loadtest-distribuited" {
     nodes_size = 2
     
     loadtest_entrypoint = "bzt -q -o execution.0.distributed=\"{NODES_IPS}\" taurus/basic.yml"
+
+    subnet_id = data.aws_subnet.current.id
+}
+
+data "aws_subnet" "current" {
+    filter {
+        name   = "tag:Name"
+        values = ["my-subnet-name"]
+    }
+}
+```
+
+## Basic usage with Locust
+
+
+```hcl
+module "loadtest-distribuited" {
+
+    source  = "marcosborges/loadtest-distribuited/aws"
+
+    name = "nome-da-implantacao"
+    nodes_size = 2
+    executor = "locust"
+
+    loadtest_dir_source = "examples/plan/"
+    locust_plan_filename = "basic.py"
+    
+    loadtest_entrypoint = <<-EOT
+        nohup locust \
+            -f ${var.locust_plan_filename} \
+            --web-port=8080 \
+            --expect-workers=${var.node_size} \
+            --master > locust-leader.out 2>&1 &
+    EOT
+
+    node_custom_entrypoint = <<-EOT
+        nohup locust \
+            -f ${var.locust_plan_filename} \
+            --worker \
+            --master-host={LEADER_IP} > locust-worker.out 2>&1 &
+    EOT
 
     subnet_id = data.aws_subnet.current.id
 }
