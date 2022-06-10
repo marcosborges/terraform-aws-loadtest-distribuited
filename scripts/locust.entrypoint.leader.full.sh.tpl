@@ -4,7 +4,7 @@ sudo yum update -y
 sudo yum install -y pcre2-devel.x86_64 python gcc python3-devel tzdata curl unzip bash htop
 
 # LOCUST
-export LOCUST_VERSION="2.4.3"
+export LOCUST_VERSION="2.9.0"
 sudo pip3 install locust==$LOCUST_VERSION
 
 export PRIVATE_IP=$(hostname -I | awk '{print $1}')
