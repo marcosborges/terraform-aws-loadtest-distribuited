@@ -89,7 +89,7 @@ resource "tls_private_key" "loadtest" {
 }
 
 locals {
-  export_pem_cmd = var.ssh_export_pem == true ? "echo '${tls_private_key.loadtest.private_key_pem}' > ${var.name}-keypair.pem" : "echo 'key pair export disabled'"
+  export_pem_cmd = var.ssh_export_pem == true ? "echo '${tls_private_key.loadtest.private_key_pem}' > ${var.name}-loadtest-keypair.pem" : "echo 'key pair export disabled'"
 }
 
 resource "aws_key_pair" "loadtest" {
