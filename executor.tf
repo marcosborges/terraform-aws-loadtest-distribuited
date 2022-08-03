@@ -73,7 +73,8 @@ resource "null_resource" "setup_nodes" {
 
   depends_on = [
     aws_instance.leader,
-    aws_instance.nodes
+    aws_instance.nodes,
+    null_resource.executor,
   ]
   connection {
     host        = coalesce(aws_instance.nodes[count.index].public_ip, aws_instance.nodes[count.index].private_ip)
@@ -111,7 +112,6 @@ resource "null_resource" "executor" {
   depends_on = [
     aws_instance.leader,
     aws_instance.nodes,
-    null_resource.setup_nodes,
     null_resource.setup_leader,
     null_resource.spliter_execute_command
   ]
