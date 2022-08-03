@@ -83,13 +83,28 @@ resource "null_resource" "setup_nodes" {
     private_key = tls_private_key.loadtest.private_key_pem
   }
   provisioner "remote-exec" {
-    inline = [
-      "echo SETUP NODES ${count.index}",
-      "echo '${local.node_entrypoint}'",
-      "cd ${var.loadtest_dir_destination}",
-      "${local.node_entrypoint}",
-      "sleep 1"
-    ]
+    inline = concat(
+      [
+        "echo SETUP NODES ${count.index}",
+        "echo '${local.node_entrypoint}'",
+        "cd ${var.loadtest_dir_destination}"
+      ],
+      [
+        for i in range(var.locust_replicas_per_node):
+          replace(
+            replace(
+              var.node_custom_entrypoint,
+              "{NODES_IPS}",
+              local.nodes_ips
+            ),
+            "{LEADER_IP}",
+            local.leader_private_ip
+          )
+      ],
+      [
+        "sleep 1"
+      ]
+    )
   }
 
   triggers = {
