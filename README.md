@@ -317,6 +317,7 @@ No modules.
 | <a name="input_subnet_id"></a> [subnet\_id](#input\_subnet\_id) | Id of the subnet | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Common tags | `map` | `{}` | no |
 | <a name="input_taurus_version"></a> [taurus\_version](#input\_taurus\_version) | Taurus version | `string` | `"1.16.0"` | no |
+| <a name="input_locust_version"></a> [locust\_version](#input\_locust_\_version) | Locust version | `string` | `"2.9.0"` | no |
 | <a name="input_web_cidr_ingress_blocks"></a> [web\_cidr\_ingress\_blocks](#input\_web\_cidr\_ingress\_blocks) | web for the leader | `list` | <pre>[<br>  "0.0.0.0/0"<br>]</pre> | no |
 
 ## Outputs
