@@ -52,6 +52,7 @@ locals {
           "${path.module}/scripts/entrypoint.leader.full.sh.tpl",
           {
             JVM_ARGS = var.nodes_jvm_args
+            LOCUST_VERSION = var.locust_version
           }
         )
       )
@@ -62,6 +63,7 @@ locals {
           "${path.module}/scripts/entrypoint.leader.full.sh.tpl",
           {
             JVM_ARGS = var.nodes_jvm_args
+            LOCUST_VERSION = var.locust_version
           }
         )
       )
@@ -70,7 +72,9 @@ locals {
       leader_user_data_base64 = base64encode(
         templatefile(
           "${path.module}/scripts/locust.entrypoint.leader.full.sh.tpl",
-          {}
+          {
+            LOCUST_VERSION = var.locust_version
+          }
         )
       )
     }
@@ -79,7 +83,8 @@ locals {
         templatefile(
           "${path.module}/scripts/k6.entrypoint.node.full.sh.tpl",
           {
-            JVM_ARGS = var.nodes_jvm_args
+            JVM_ARGS = var.nodes_jvm_args,
+            LOCUST_VERSION = var.locust_version
           }
         )
       )
