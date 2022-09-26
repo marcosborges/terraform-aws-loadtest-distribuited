@@ -53,6 +53,8 @@ resource "aws_instance" "nodes" {
     var.tags,
     var.nodes_tags
   )
+
+  volume_tags = tags
 }
 
 locals {
