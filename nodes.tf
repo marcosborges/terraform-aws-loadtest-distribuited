@@ -53,6 +53,11 @@ resource "aws_instance" "nodes" {
     var.tags,
     var.nodes_tags
   )
+
+  volume_tags = merge(
+    var.tags,
+    var.nodes_tags
+  )
 }
 
 locals {
