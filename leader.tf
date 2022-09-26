@@ -41,6 +41,11 @@ resource "aws_instance" "leader" {
     var.tags,
     var.leader_tags
   )
+
+  volume_tags = merge(
+    var.tags,
+    var.nodes_tags
+  )
 }
 
 
