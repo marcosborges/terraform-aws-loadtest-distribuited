@@ -90,5 +90,11 @@ locals {
     leader_user_data_base64 = var.leader_custom_setup_base64
   })
 
-  setup_leader_base64 = local.setup_leader_executor.leader_user_data_base64
+  setup_leader_base64 = (
+    var.auto_setup ?
+    local.setup_leader_executor.leader_user_data_base64 :
+    var.leader_custom_setup_base64 != "" ? 
+    var.leader_custom_setup_base64 :
+    ""
+  )
 }

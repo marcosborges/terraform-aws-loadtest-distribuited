@@ -105,6 +105,12 @@ locals {
     }
   )
 
-  setup_nodes_base64 = local.setup_nodes_executor.node_user_data_base64
+  setup_nodes_base64 = (
+    var.auto_setup ?
+    local.setup_nodes_executor.node_user_data_base64 :
+    var.nodes_custom_setup_base64 != "" ? 
+    var.nodes_custom_setup_base64 :
+    ""
+  )
 
 }
