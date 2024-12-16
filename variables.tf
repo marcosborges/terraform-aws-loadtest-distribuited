@@ -236,3 +236,9 @@ variable "locust_exporter" {
   }
   description = "Export locust result to prometheus"
 }
+
+variable "locust_version" {
+  description = "Locust version defaults to 2.9.0"
+  type        = string
+  default     = "2.9.0"
+}

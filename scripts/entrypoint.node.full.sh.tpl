@@ -8,7 +8,7 @@ export BZT_VERSION="1.16.0"
 sudo pip3 install bzt==$BZT_VERSION
 
 # LOCUST
-export LOCUST_VERSION="2.9.0"
+export LOCUST_VERSION="${LOCUST_VERSION}"
 sudo pip3 install locust==$LOCUST_VERSION
 
 

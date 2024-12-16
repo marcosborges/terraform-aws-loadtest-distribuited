@@ -51,7 +51,10 @@ resource "aws_instance" "nodes" {
 
   tags = merge(
     var.tags,
-    var.nodes_tags
+    var.nodes_tags,
+    {
+      "Name": "${var.name} Node ${count.index}"
+    }
   )
 }
 
@@ -64,6 +67,7 @@ locals {
           "${path.module}/scripts/entrypoint.node.full.sh.tpl",
           {
             JVM_ARGS = var.nodes_jvm_args
+            LOCUST_VERSION = var.locust_version
           }
         )
       )
@@ -74,6 +78,7 @@ locals {
           "${path.module}/scripts/entrypoint.node.full.sh.tpl",
           {
             JVM_ARGS = var.nodes_jvm_args
+            LOCUST_VERSION = var.locust_version
           }
         )
       )
@@ -82,7 +87,9 @@ locals {
       node_user_data_base64 = base64encode(
         templatefile(
           "${path.module}/scripts/locust.entrypoint.node.full.sh.tpl",
-          {}
+          {
+            LOCUST_VERSION = var.locust_version
+          }
         )
       )
     }
@@ -92,6 +99,7 @@ locals {
           "${path.module}/scripts/k6.entrypoint.node.full.sh.tpl",
           {
             JVM_ARGS = var.nodes_jvm_args
+            LOCUST_VERSION = var.locust_version
           }
         )
       )

@@ -8,7 +8,8 @@ locals {
     templatefile(
       "${path.module}/scripts/entrypoint.leader.full.sh.tpl",
       {
-        JVM_ARGS = var.leader_jvm_args,
+        JVM_ARGS = var.leader_jvm_args
+        LOCUST_VERSION = var.locust_version
       }
     )
   )
@@ -18,6 +19,7 @@ locals {
       "${path.module}/scripts/entrypoint.node.full.sh.tpl",
       {
         JVM_ARGS = var.nodes_jvm_args
+        LOCUST_VERSION = var.locust_version
       }
     )
   )
@@ -27,6 +29,7 @@ locals {
       "${path.module}/scripts/entrypoint.node.full.sh.tpl",
       {
         JVM_ARGS = var.nodes_jvm_args
+        LOCUST_VERSION = var.locust_version
       }
     )
   )

@@ -87,7 +87,7 @@ resource "null_resource" "setup_nodes" {
       "echo SETUP NODES ${count.index}",
       "echo '${local.node_entrypoint}'",
       "cd ${var.loadtest_dir_destination}",
-      "${local.node_entrypoint}",
+      local.node_entrypoint,
       "sleep 1"
     ]
   }
